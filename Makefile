@@ -1,4 +1,4 @@
-.PHONY: start stop
+.PHONY: clean start stop
 
 start:
 	@echo "Starting..."
@@ -8,3 +8,8 @@ start:
 stop:
 	@echo "Stopping..."
 	docker compose down
+
+clean:
+	@echo "Cleaning..."
+	docker compose down --rmi all --volumes --remove-orphans
+	./gradlew clean
