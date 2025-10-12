@@ -1,6 +1,6 @@
 # is-labwork
 
-> Using Jakarta EE (__fucking__ superior)
+> Using Jakarta EE (_fucking_ superior)
 
 ## Songs collection
 
