@@ -20,7 +20,7 @@ serve: build
 push:
 	@echo "Pushing to git..."
 	git add .
-	git commit -m "Auto commit"
+	git commit
 	git push
 
 
