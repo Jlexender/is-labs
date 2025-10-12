@@ -15,9 +15,13 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
 
+      - name: Add Server Host Key
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -p 2222 se.ifmo.ru >> ~/.ssh/known_hosts
+
       - name: Build and push to server
         run: make serve
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-          SSH_KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
 
