@@ -4,4 +4,4 @@
 
 ## Nightcore collection
 
-![California Gurls - Nightcore](https://youtu.be/tyg6AHA8KE8)
+[California Gurls - Nightcore](https://youtu.be/tyg6AHA8KE8)
