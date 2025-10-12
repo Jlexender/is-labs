@@ -12,3 +12,6 @@ bin
 # env
 .env
 
+# Docker
+db_data
+
