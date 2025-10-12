@@ -13,12 +13,13 @@
     <class>org.example.domain.Dummy</class>
 
     <properties>
-      <property name="eclipselink.target-server" value="JBoss"/>
       <property name="eclipselink.logging.level" value="FINE"/>
       <property name="eclipselink.ddl-generation" value="create-or-extend-tables"/>
       <property name="eclipselink.ddl-generation.output-mode" value="database"/>
       <property name="eclipselink.weaving" value="true"/>
       <property name="eclipselink.logging.parameters" value="true"/>
+      
+      <property name="eclipselink.target-server" value="JBoss"/>
     </properties>
   </persistence-unit>
 

@@ -1,9 +1,10 @@
 package org.example.service;
 
 import jakarta.ejb.Stateless;
+import jakarta.ejb.TransactionAttribute;
+import jakarta.ejb.TransactionAttributeType;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import jakarta.transaction.Transactional;
 
 import org.example.domain.Dummy;
 
@@ -15,13 +16,13 @@ public class DummyService {
     @PersistenceContext(unitName = "dummyPU")
     private EntityManager entityManager;
 
-    @Transactional
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public Dummy save(Dummy dummy) {
         entityManager.persist(dummy);
         return dummy;
     }
 
-    @Transactional
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public Dummy save(String name) {
         Dummy dummy = new Dummy();
         dummy.setName(name);
@@ -38,7 +39,7 @@ public class DummyService {
                 .getResultList();
     }
 
-    @Transactional
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void deleteById(Long id) {
         Dummy dummy = findById(id);
         if (dummy != null) {
