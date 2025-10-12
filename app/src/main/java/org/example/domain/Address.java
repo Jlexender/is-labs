@@ -1,11 +1,12 @@
 package org.example.domain;
 
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
 public class Address {
-    @NotNull
+    @NotEmpty
     private String street; 
 
     @NotNull
