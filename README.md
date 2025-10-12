@@ -21,3 +21,5 @@
 [I Kissed A Girl (Sped up)](https://youtu.be/7ZyPvLPaxO0)
 
 [Nightcore This - S3RL feat Tamika](https://youtu.be/FcRJGHkpm8s)
+
+[Kets4ki - Party Addict [feat. Nosgov] (Extended Version)](https://youtu.be/2OXp7vReOmg)
