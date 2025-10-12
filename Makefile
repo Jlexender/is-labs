@@ -15,7 +15,9 @@ build:
 
 serve: build
 	@echo "Pushing to server..."
-	scp -P 2222 $(BUILD_PATH)/*.war $(BUILD_PATH)/*.war.dodeploy $(USERNAME)@$(HOST):$(WILDFLY_PATH)/standalone/deployments/
+	scp -P 2222 $(BUILD_PATH)/*.war \
+				$(BUILD_PATH)/*.war.dodeploy \
+				$(USERNAME)@$(HOST):$(WILDFLY_PATH)/standalone/deployments/
 
 push:
 	@echo "Pushing to git..."
