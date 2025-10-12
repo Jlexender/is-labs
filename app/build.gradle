@@ -20,6 +20,11 @@ dependencies {
     // https://mvnrepository.com/artifact/jakarta.platform/jakarta.jakartaee-api
     compileOnly 'jakarta.platform:jakarta.jakartaee-api:11.0.0'
 
+    // https://projectlombok.org/setup/gradle
+    // Lombok
+    compileOnly("org.projectlombok:lombok:1.18.42")
+	annotationProcessor("org.projectlombok:lombok:1.18.42")
+
     // Use JUnit Jupiter for testing.
     testImplementation libs.junit.jupiter
 
