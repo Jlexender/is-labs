@@ -1,5 +1,8 @@
 package org.example.domain;
 
+import lombok.Data;
+
+@Data
 public class Ticket {
     private Long id; // Поле не может быть null, Значение поля должно быть больше 0, Значение этого
                      // поля должно быть уникальным, Значение этого поля должно генерироваться
