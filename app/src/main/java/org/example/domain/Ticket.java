@@ -1,5 +1,10 @@
 package org.example.domain;
 
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -10,7 +15,8 @@ import lombok.Data;
 public class Ticket {
     @NotNull
     @Positive
-    // TODO: id generation
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotEmpty
@@ -20,8 +26,7 @@ public class Ticket {
     private Coordinates coordinates;
 
     @NotNull
-    // TODO: creationDate generation
-    private java.time.LocalDate creationDate;
+    private java.time.LocalDate creationDate = java.time.LocalDate.now();
 
     @NotNull
     private Person person;
@@ -33,6 +38,7 @@ public class Ticket {
     private float price;
 
     @NotNull
+    @Enumerated(EnumType.STRING)
     private TicketType type;
 
     @NotNull
