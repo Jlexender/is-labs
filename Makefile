@@ -11,5 +11,5 @@ stop:
 
 clean:
 	@echo "Cleaning..."
-	docker compose down --rmi all --volumes --remove-orphans
+	docker compose down -v
 	./gradlew clean
