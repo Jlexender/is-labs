@@ -62,3 +62,13 @@ tasks.named('test') {
     // Use JUnit Platform for unit tests.
     useJUnitPlatform()
 }
+
+tasks.named('war') {
+    doLast {
+        def warFile = archiveFile.get().asFile
+        def deployDir = new File(warFile.parent)
+        def dodeployFile = new File(deployDir, warFile.name + '.dodeploy')
+        dodeployFile.createNewFile()
+    }
+}
+
