@@ -2,7 +2,7 @@
 
 > Using Jakarta EE (fucking superior)
 
-## WildFly configuration
+## Host WildFly configuration
 
 Port mappings:
 
