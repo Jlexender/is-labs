@@ -9,15 +9,14 @@ import lombok.Data;
 public class Venue {
     @Positive
     // TODO: id generation
-    private long id; // Значение поля должно быть больше 0, Значение этого поля должно быть
-                     // уникальным, Значение этого поля должно генерироваться автоматически
+    private long id;
 
     @NotEmpty
-    private String name; // Поле не может быть null, Строка не может быть пустой
+    private String name;
 
     @Positive
-    private int capacity; // Значение поля должно быть больше 0
+    private int capacity;
 
     @NotNull
-    private Address address; // Поле не может быть null
+    private Address address;
 }

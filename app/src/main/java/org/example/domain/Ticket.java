@@ -11,45 +11,41 @@ public class Ticket {
     @NotNull
     @Positive
     // TODO: id generation
-    private Long id; // Поле не может быть null, Значение поля должно быть больше 0, Значение этого
-                     // поля должно быть уникальным, Значение этого поля должно генерироваться
-                     // автоматически
+    private Long id;
 
     @NotEmpty
-    private String name; // Поле не может быть null, Строка не может быть пустой
+    private String name;
 
     @NotNull
-    private Coordinates coordinates; // Поле не может быть null
+    private Coordinates coordinates;
 
     @NotNull
     // TODO: creationDate generation
-    private java.time.LocalDate creationDate; // Поле не может быть null, Значение этого поля должно генерироваться
-                                              // автоматически
+    private java.time.LocalDate creationDate;
 
     @NotNull
-    private Person person; // Поле может быть null
+    private Person person;
 
     @NotNull
-    private Event event; // Поле может быть null
+    private Event event;
 
     @Positive
-    private float price; // Значение поля должно быть больше 0
+    private float price;
 
     @NotNull
-    private TicketType type; // Поле может быть null
+    private TicketType type;
 
     @NotNull
     @Positive
     @Max(100)
-    private Long discount; // Поле не может быть null, Значение поля должно быть больше 0, Максимальное
-                           // значение поля: 100
+    private Long discount;
 
     @Positive
-    private long number; // Значение поля должно быть больше 0
+    private long number;
 
     @NotNull
-    private String comment; // Поле может быть null
+    private String comment;
 
     @NotNull
-    private Venue venue; // Поле может быть null
+    private Venue venue;
 }

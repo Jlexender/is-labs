@@ -9,15 +9,14 @@ import lombok.Data;
 public class Event {
     @Positive
     // TODO: id generation
-    private long id; // Значение поля должно быть больше 0, Значение этого поля должно быть
-                     // уникальным, Значение этого поля должно генерироваться автоматически
+    private long id;
 
     @NotEmpty
-    private String name; // Поле не может быть null, Строка не может быть пустой
+    private String name;
 
     @Positive
-    private int ticketsCount; // Значение поля должно быть больше 0
+    private int ticketsCount;
 
     @NotNull
-    private EventType eventType; // Поле не может быть null
+    private EventType eventType;
 }

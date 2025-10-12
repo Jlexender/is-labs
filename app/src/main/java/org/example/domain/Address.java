@@ -6,8 +6,8 @@ import lombok.Data;
 @Data
 public class Address {
     @NotNull
-    private String street; // Поле может быть null
+    private String street; 
 
     @NotNull
-    private Location town; // Поле может быть null
+    private Location town;
 }
