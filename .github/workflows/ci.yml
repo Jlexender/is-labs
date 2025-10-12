@@ -19,9 +19,12 @@ jobs:
         run: |
           mkdir -p ~/.ssh
           ssh-keyscan -p 2222 se.ifmo.ru >> ~/.ssh/known_hosts
+      
+      - name: Install SSH Private Key
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       - name: Build and push to server
         run: make serve
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
 
