@@ -8,11 +8,12 @@
   <persistence-unit name="dummyPU" transaction-type="JTA"> 
     <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
 
-    <jta-data-source>java:jboss/datasources/PostgresDS</jta-data-source> 
+    <jta-data-source>java:/PostgresDS</jta-data-source> 
 
     <class>org.example.domain.Dummy</class>
 
     <properties>
+      <property name="eclipselink.target-server" value="JBoss"/>
       <property name="eclipselink.logging.level" value="FINE"/>
       <property name="eclipselink.ddl-generation" value="create-or-extend-tables"/>
       <property name="eclipselink.ddl-generation.output-mode" value="database"/>

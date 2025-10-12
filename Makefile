@@ -29,9 +29,10 @@ push:
 HTTP_SRV_PORT=8841
 HTTP_MGMT_PORT=18800
 
-
-
-
-
+forward: 
+	@echo "Forwarding ports..."
+	ssh -L 8080:localhost:$(HTTP_SRV_PORT) \
+		-L 9990:localhost:$(HTTP_MGMT_PORT) \
+		-p 2222 $(USERNAME)@$(HOST)
 
 

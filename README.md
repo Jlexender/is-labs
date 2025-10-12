@@ -12,3 +12,7 @@ Port mappings:
 4. Mgmt HTTPS: 18803
 
 Username: `jex`
+
+DBMS: PostgreSQL
+JNDI mapping: `java:/PostgresDS`
+Driver: `org.postgresql.postgresql 42.7.8`

@@ -1,9 +1,10 @@
 package org.example.service;
 
 import jakarta.ejb.Stateless;
-import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.transaction.Transactional;
+
 import org.example.domain.Dummy;
 
 import java.util.List;
@@ -14,15 +15,13 @@ public class DummyService {
     @PersistenceContext(unitName = "dummyPU")
     private EntityManager entityManager;
 
+    @Transactional
     public Dummy save(Dummy dummy) {
-        if (dummy.getId() == null) {
-            entityManager.persist(dummy);
-            return dummy;
-        } else {
-            return entityManager.merge(dummy);
-        }
+        entityManager.persist(dummy);
+        return dummy;
     }
 
+    @Transactional
     public Dummy save(String name) {
         Dummy dummy = new Dummy();
         dummy.setName(name);
@@ -39,6 +38,7 @@ public class DummyService {
                 .getResultList();
     }
 
+    @Transactional
     public void deleteById(Long id) {
         Dummy dummy = findById(id);
         if (dummy != null) {
