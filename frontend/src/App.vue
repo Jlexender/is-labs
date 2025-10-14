@@ -7,6 +7,7 @@ import { RouterLink, RouterView } from 'vue-router'
     <div class="wrapper">
       <nav>
         <RouterLink to="/">Home</RouterLink>
+        <RouterLink to="/special-ops">Special Ops</RouterLink>
       </nav>
     </div>
   </header>
@@ -14,5 +15,4 @@ import { RouterLink, RouterView } from 'vue-router'
   <RouterView />
 </template>
 
-<style scoped>
-</style>
+<style scoped></style>

@@ -9,6 +9,11 @@ const router = createRouter({
       name: 'home',
       component: HomeView,
     },
+    {
+      path: '/special-ops',
+      name: 'special-ops',
+      component: () => import('../views/SpecialOpsView.vue'),
+    }
   ],
 })
 
