@@ -1,6 +1,17 @@
 <script setup>
 import EntityTable from '@/components/EntityTable.vue';
+import { ref, onMounted } from 'vue';
 
+const entityCount = ref(null);
+
+onMounted(async () => {
+    try {
+        const response = await fetch('/api/entities/count');
+        entityCount.value = await response.json();
+    } catch (error) {
+        console.error('Error fetching entity count:', error);
+    }
+});
 </script>
 
 <template>
