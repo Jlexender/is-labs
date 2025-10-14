@@ -1,10 +1,14 @@
 package org.example.api;
 
 import jakarta.ejb.EJB;
+import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+
+import org.example.dto.DummyDto;
 import org.example.entity.Dummy;
+import org.example.mapper.DummyMapper;
 import org.example.service.DummyService;
 
 import java.util.List;
@@ -13,67 +17,51 @@ import java.util.List;
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 public class DummyResource {
-
     @EJB
     private DummyService dummyService;
 
-    @POST
-    public Response createDummy(Dummy dummy) {
-        try {
-            Dummy savedDummy = dummyService.save(dummy);
-            return Response.status(Response.Status.CREATED).entity(savedDummy).build();
-        } catch (Exception e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("Error saving dummy: " + e.getMessage()).build();
-        }
+    private DummyMapper dummyMapper = DummyMapper.INSTANCE;
+
+    @GET
+    @Path("/health")
+    @Produces(MediaType.TEXT_PLAIN)
+    public String healthCheck() {
+        return "OK";
     }
 
     @POST
     @Path("/simple")
     @Consumes(MediaType.TEXT_PLAIN)
-    public Response createSimpleDummy(String name) {
+    public Response createDummyByName(String name) {
         try {
-            Dummy savedDummy = dummyService.save(name);
-            return Response.status(Response.Status.CREATED).entity(savedDummy).build();
+            Dummy dummy = dummyService.save(name);
+            return Response.status(Response.Status.CREATED).entity(dummyMapper.toDto(dummy)).build();
         } catch (Exception e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("Error saving dummy: " + e.getMessage()).build();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
         }
     }
 
     @GET
-    public List<Dummy> getAllDummies() {
-        return dummyService.findAll();
+    @Path("/schema")
+    public Response getJsonSchema() {
+        return Response.ok(DummyDto.getJsonFieldSchema()).build();
     }
 
     @GET
-    @Path("/{id}")
-    public Response getDummyById(@PathParam("id") Long id) {
-        Dummy dummy = dummyService.findById(id);
-        if (dummy != null) {
-            return Response.ok(dummy).build();
-        } else {
-            return Response.status(Response.Status.NOT_FOUND).build();
-        }
+    @Path("/all")
+    public Response getAllDummies() {
+        List<Dummy> dummies = dummyService.findAll();
+        List<DummyDto> dummyDtos = dummies.stream()
+                .map(dummyMapper::toDto)
+                .toList();
+        return Response.ok(dummyDtos).build();
     }
 
     @GET
     @Path("/count")
     @Produces(MediaType.TEXT_PLAIN)
-    public Response getCount() {
+    public Response countDummies() {
         long count = dummyService.count();
-        return Response.ok(String.valueOf(count)).build();
-    }
-
-    @DELETE
-    @Path("/{id}")
-    public Response deleteDummy(@PathParam("id") Long id) {
-        try {
-            dummyService.deleteById(id);
-            return Response.noContent().build();
-        } catch (Exception e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("Error deleting dummy: " + e.getMessage()).build();
-        }
+        return Response.ok(count).build();
     }
 }

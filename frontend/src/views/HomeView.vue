@@ -1,5 +1,5 @@
 <script setup>
-import EntityTable from '@/components/EntityTable.vue';
+import EntityPanel from '@/components/EntityTable.vue';
 import { ref, onMounted } from 'vue';
 
 const entityCount = ref(null);
@@ -17,7 +17,7 @@ onMounted(async () => {
 <template>
     <div class="home">
         <h1>Home View</h1>
-        <EntityTable />
+        <EntityPanel />
 
         <p>Entity count: {{ entityCount }}</p>
     </div>
