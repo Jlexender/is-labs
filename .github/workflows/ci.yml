@@ -26,5 +26,5 @@ jobs:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       - name: Build and push to server
-        run: make serve
+        run: make push
 
