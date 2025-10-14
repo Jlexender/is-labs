@@ -8,10 +8,15 @@ HOST=se.ifmo.ru
 clean:
 	@echo "Cleaning..."
 	./gradlew clean
-
-build: 
+	rm -rf backend/src/main/webapp/assets
+	rm -f backend/src/main/webapp/index.html
+	
+build: clean
 	@echo "Building..."
-	./gradlew clean build
+	cd frontend && bun run build
+	cp -r frontend/dist/* backend/src/main/webapp/
+	./gradlew build
+	
 
 push: build
 	@echo "Pushing to server..."
@@ -19,7 +24,7 @@ push: build
 				$(BACKEND_BUILD_PATH)/*.war.dodeploy \
 				$(USERNAME)@$(HOST):$(WILDFLY_PATH)/standalone/deployments/
 
-publish:
+publish: clean
 	@echo "Pushing to git..."
 	git add .
 	git commit

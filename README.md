@@ -16,3 +16,12 @@ Username: `jex`
 DBMS: PostgreSQL
 JNDI mapping: `java:/PostgresDS`
 Driver: `org.postgresql.postgresql 42.7.8`
+
+## Deployment
+
+Use makefile.
+
+* `make build` for embedding a front-end & archiving a WAR
+* `make push` for deploying to WildFly on the server (change username in the makefile for your needs)
+
+
