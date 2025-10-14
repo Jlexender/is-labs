@@ -13,13 +13,13 @@ build:
 	@echo "Building..."
 	./gradlew clean build
 
-serve: build
+push: build
 	@echo "Pushing to server..."
 	scp -P 2222 $(BUILD_PATH)/*.war \
 				$(BUILD_PATH)/*.war.dodeploy \
 				$(USERNAME)@$(HOST):$(WILDFLY_PATH)/standalone/deployments/
 
-push:
+publish:
 	@echo "Pushing to git..."
 	git add .
 	git commit
