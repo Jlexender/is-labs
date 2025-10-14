@@ -6,7 +6,7 @@ import jakarta.ejb.TransactionAttributeType;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 
-import org.example.domain.Dummy;
+import org.example.entity.Dummy;
 
 import java.util.List;
 

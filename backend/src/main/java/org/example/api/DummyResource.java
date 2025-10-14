@@ -4,7 +4,7 @@ import jakarta.ejb.EJB;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import org.example.domain.Dummy;
+import org.example.entity.Dummy;
 import org.example.service.DummyService;
 
 import java.util.List;

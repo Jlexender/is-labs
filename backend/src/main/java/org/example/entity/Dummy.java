@@ -1,4 +1,6 @@
-package org.example.domain;
+package org.example.entity;
+
+import java.time.LocalDateTime;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -14,4 +16,6 @@ public class Dummy {
     Long id;
     
     String name;
+
+    LocalDateTime createdAt;
 }

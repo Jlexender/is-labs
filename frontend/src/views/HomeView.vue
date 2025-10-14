@@ -18,6 +18,8 @@ onMounted(async () => {
     <div class="home">
         <h1>Home View</h1>
         <EntityTable />
+
+        <p>Entity count: {{ entityCount }}</p>
     </div>
 </template>
 
