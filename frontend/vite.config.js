@@ -19,7 +19,7 @@ export default defineConfig({
   server: {
     port: 3000,
     proxy: {
-      '/api': import.meta.env.SERVER_URL,
+      '/api': import.meta.env.BACKEND_URL,
     }
   }
 })
