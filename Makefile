@@ -1,6 +1,6 @@
 .PHONY: clean build push serve deploy
 
-BUILD_PATH:=app/build/libs
+BACKEND_BUILD_PATH:=backend/build/libs
 WILDFLY_PATH=/home/studs/s408724/wildfly
 USERNAME=s408724
 HOST=se.ifmo.ru
@@ -15,8 +15,8 @@ build:
 
 push: build
 	@echo "Pushing to server..."
-	scp -P 2222 $(BUILD_PATH)/*.war \
-				$(BUILD_PATH)/*.war.dodeploy \
+	scp -P 2222 $(BACKEND_BUILD_PATH)/*.war \
+				$(BACKEND_BUILD_PATH)/*.war.dodeploy \
 				$(USERNAME)@$(HOST):$(WILDFLY_PATH)/standalone/deployments/
 
 publish:

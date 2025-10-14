@@ -11,4 +11,4 @@ plugins {
 }
 
 rootProject.name = 'is-labwork'
-include('app')
+include('backend')
