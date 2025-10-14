@@ -19,6 +19,11 @@ jobs:
         uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
+      
+      - name: Install frontend dependencies
+        run: |
+          cd frontend
+          bun install
 
       - name: Add Server Host Key
         run: |
