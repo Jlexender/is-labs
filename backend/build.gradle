@@ -27,17 +27,23 @@ dependencies {
     compileOnly 'jakarta.validation:jakarta.validation-api:3.1.1'
 
     // https://mvnrepository.com/artifact/org.mapstruct/mapstruct
-    implementation 'org.mapstruct:mapstruct:1.6.3'
+    // implementation 'org.mapstruct:mapstruct:1.6.3'
 
     // https://mvnrepository.com/artifact/org.mapstruct/mapstruct-processor
-    implementation 'org.mapstruct:mapstruct-processor:1.6.3'
-    annotationProcessor 'org.mapstruct:mapstruct-processor:1.6.3'
+    // implementation 'org.mapstruct:mapstruct-processor:1.6.3'
+    // annotationProcessor 'org.mapstruct:mapstruct-processor:1.6.3'
 
     // https://mvnrepository.com/artifact/org.eclipse.persistence/eclipselink
     // implementation 'org.eclipse.persistence:eclipselink:4.0.8'
 
     // https://mvnrepository.com/artifact/org.eclipse.persistence/org.eclipse.persistence.jpa
     // implementation 'org.eclipse.persistence:org.eclipse.persistence.jpa:4.0.8'
+
+    // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.20.0'
+
+    // https://mvnrepository.com/artifact/com.fasterxml.jackson.datatype/jackson-datatype-jsr310
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.20.0'
 
     // https://projectlombok.org/setup/gradle
     compileOnly("org.projectlombok:lombok:1.18.42")
