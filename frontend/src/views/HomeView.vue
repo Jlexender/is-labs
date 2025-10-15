@@ -6,7 +6,7 @@ const entityCount = ref(null);
 
 onMounted(async () => {
     try {
-        const response = await fetch('/api/dummy/count');
+        const response = await fetch('http://' + import.meta.env.VITE_BACKEND_SOCKET + '/api/dummy/count');
         entityCount.value = await response.json();
     } catch (error) {
         console.error('Error fetching entity count:', error);

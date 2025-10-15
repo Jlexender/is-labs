@@ -1,5 +1,11 @@
 <script setup>
 import { RouterLink, RouterView } from 'vue-router'
+
+const socket = new WebSocket('ws://' + import.meta.env.VITE_BACKEND_SOCKET + '/ws/dummy');
+socket.onopen = () => {
+  console.log('WebSocket connection established');
+};
+
 </script>
 
 <template>
