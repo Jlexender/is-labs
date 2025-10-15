@@ -25,3 +25,4 @@ Use makefile.
 * `make push` for deploying to WildFly on the server (change username in the makefile for your needs)
 
 
+
