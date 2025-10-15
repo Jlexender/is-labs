@@ -23,6 +23,7 @@ jobs:
       - name: Install frontend dependencies
         run: |
           cd frontend
+          echo "VITE_BACKEND_SOCKET=${{ secrets.BACKEND_SOCKET }}" >> .env
           bun install
 
       - name: Add Server Host Key
