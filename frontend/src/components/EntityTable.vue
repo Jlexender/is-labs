@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, inject } from 'vue';
+import { onMounted, inject, ref } from 'vue';
 
 const tableData = inject('tableData');
 
@@ -16,6 +16,41 @@ onMounted(async () => {
         console.error('There was a problem with the fetch operation:', error);
     }
 });
+
+const editingId = ref(null);
+const editingField = ref(null);
+const draftValue = ref('');
+
+function startEdit(id, field, currentValue) {
+    editingId.value = id;
+    editingField.value = field;
+    draftValue.value = currentValue ?? '';
+}
+
+function cancelEdit() {
+    editingId.value = null;
+    editingField.value = null;
+    draftValue.value = '';
+}
+
+async function commitEdit(dummy) {
+    if (editingId.value !== dummy.id) return;
+    const payload = { ...dummy, [editingField.value]: draftValue.value };
+    try {
+        const response = await fetch('http://' + import.meta.env.VITE_BACKEND_SOCKET + '/api/dummy/' + dummy.id, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        if (!response.ok) {
+            throw new Error('Failed to update');
+        }
+        // Do not mutate local tableData; WS will update it
+        cancelEdit();
+    } catch (e) {
+        console.error('Update error:', e);
+    }
+}
 
 async function removeDummy(id) {
     try {
@@ -49,8 +84,14 @@ async function removeDummy(id) {
             <tbody>
                 <tr v-for="dummy in tableData" :key="dummy.id">
                     <td>{{ dummy.id }}</td>
-                    <td>{{ dummy.name }}</td>
-                    <td>{{ dummy.description }}</td>
+                    <td>
+                        <span v-if="!(editingId === dummy.id && editingField === 'name')" @dblclick="startEdit(dummy.id, 'name', dummy.name)">{{ dummy.name }}</span>
+                        <input v-else v-model="draftValue" @keyup.enter="commitEdit(dummy)" @blur="cancelEdit" />
+                    </td>
+                    <td>
+                        <span v-if="!(editingId === dummy.id && editingField === 'description')" @dblclick="startEdit(dummy.id, 'description', dummy.description)">{{ dummy.description }}</span>
+                        <input v-else v-model="draftValue" @keyup.enter="commitEdit(dummy)" @blur="cancelEdit" />
+                    </td>
                     <td>{{ dummy.createdAt }}</td>
                     <td>
                         <button class="danger" @click="removeDummy(dummy.id)">Delete</button>

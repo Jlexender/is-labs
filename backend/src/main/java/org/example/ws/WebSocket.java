@@ -52,6 +52,20 @@ public class WebSocket {
         broadcast(message);
     }
 
+    public static void dummyUpdated(Dummy dummy) {
+        try {
+            String message = """
+                    {
+                        "type": "DUMMY_UPDATED",
+                        "data": %s
+                    }
+                    """.formatted(objectMapper.writeValueAsString(dummy));
+            broadcast(message);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void broadcast(String message) {
         for (Session session : sessions) {
             if (session.isOpen()) {

@@ -21,6 +21,10 @@ socket.onmessage = (event) => {
       console.log('Dummy deleted:', message.data);
       tableData.value = tableData.value.filter(item => item.id !== parseInt(message.data));
       break;
+    case 'DUMMY_UPDATED':
+      console.log('Dummy updated:', message.data);
+      tableData.value = tableData.value.map(item => item.id === message.data.id ? message.data : item);
+      break;
   }
 };
 

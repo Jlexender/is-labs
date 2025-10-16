@@ -59,4 +59,15 @@ public class DummyResource {
         WebSocket.dummyDeleted(id);
         return Response.noContent().build();
     }
+
+    @PUT
+    @Path("/{id}")
+    public Response updateDummy(@PathParam("id") Long id, Dummy dummy) {
+        Dummy updated = dummyService.update(id, dummy);
+        if (updated == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        WebSocket.dummyUpdated(updated);
+        return Response.ok(updated).build();
+    }
 }

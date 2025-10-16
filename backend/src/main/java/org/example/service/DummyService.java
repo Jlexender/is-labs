@@ -51,4 +51,16 @@ public class DummyService {
         return entityManager.createQuery("SELECT COUNT(d) FROM Dummy d", Long.class)
                 .getSingleResult();
     }
+
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
+    public Dummy update(Long id, Dummy updated) {
+        Dummy existing = findById(id);
+        if (existing == null) {
+            return null;
+        }
+        existing.setName(updated.getName());
+        existing.setDescription(updated.getDescription());
+        // createdAt remains unchanged
+        return entityManager.merge(existing);
+    }
 }
