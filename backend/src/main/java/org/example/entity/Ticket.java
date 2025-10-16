@@ -21,7 +21,6 @@ public class Ticket {
     String name; // not null, not empty
 
     @Embedded
-    @Column(insertable = false)
     @NotNull
     Coordinates coordinates; // not null
 
