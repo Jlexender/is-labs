@@ -17,18 +17,23 @@ public class Ticket {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id; // > 0 auto
 
-    @Column(nullable = false)
     @NotBlank
     String name; // not null, not empty
 
     @Embedded
+    @Column(insertable = false)
     @NotNull
     Coordinates coordinates; // not null
 
     @Column(nullable = false)
     LocalDate creationDate = LocalDate.now(); // auto
 
-    // Optional complex fields (person, event, venue) omitted for MVP
+    // Optional complex fields
+    @Embedded
+    Person person; // nullable
+
+    @Embedded
+    Event event; // nullable
 
     @Column(nullable = false)
     @Positive
@@ -48,5 +53,8 @@ public class Ticket {
     long number; // > 0
 
     String comment; // nullable
+
+    @Embedded
+    Venue venue; // nullable
 }
 

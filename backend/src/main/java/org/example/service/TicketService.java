@@ -13,7 +13,7 @@ import java.util.List;
 @Stateless
 public class TicketService {
 
-    @PersistenceContext(unitName = "dummyPU")
+    @PersistenceContext(unitName = "ticketPU")
     private EntityManager entityManager;
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
@@ -47,15 +47,18 @@ public class TicketService {
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public Ticket update(Long id, Ticket updated) {
         Ticket existing = findById(id);
-        if (existing == null) return null;
+        if (existing == null)
+            return null;
         existing.setName(updated.getName());
         existing.setCoordinates(updated.getCoordinates());
+        existing.setPerson(updated.getPerson());
+        existing.setEvent(updated.getEvent());
         existing.setPrice(updated.getPrice());
         existing.setType(updated.getType());
         existing.setDiscount(updated.getDiscount());
         existing.setNumber(updated.getNumber());
         existing.setComment(updated.getComment());
+        existing.setVenue(updated.getVenue());
         return entityManager.merge(existing);
     }
 }
-

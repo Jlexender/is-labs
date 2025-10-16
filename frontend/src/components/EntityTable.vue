@@ -30,6 +30,9 @@ const filterNumber = ref('');
 const filterComment = ref('');
 const filterCoordX = ref('');
 const filterCoordY = ref('');
+const filterEye = ref('');
+const filterHair = ref('');
+const filterNationality = ref('');
 
 const filteredTableData = computed(() => {
     const idQ = filterId.value.trim().toLowerCase();
@@ -41,6 +44,9 @@ const filteredTableData = computed(() => {
     const commentQ = filterComment.value.trim().toLowerCase();
     const coordXQ = filterCoordX.value.trim().toLowerCase();
     const coordYQ = filterCoordY.value.trim().toLowerCase();
+    const eyeQ = filterEye.value.trim().toLowerCase();
+    const hairQ = filterHair.value.trim().toLowerCase();
+    const natQ = filterNationality.value.trim().toLowerCase();
     return tableData.value.filter(d => {
         const idStr = d.id == null ? '' : String(d.id).toLowerCase();
         const nameStr = d.name == null ? '' : String(d.name).toLowerCase();
@@ -51,6 +57,9 @@ const filteredTableData = computed(() => {
         const commentStr = d.comment == null ? '' : String(d.comment).toLowerCase();
         const coordXStr = d.coordinates && d.coordinates.x != null ? String(d.coordinates.x).toLowerCase() : '';
         const coordYStr = d.coordinates && d.coordinates.y != null ? String(d.coordinates.y).toLowerCase() : '';
+        const eyeStr = d.person && d.person.eyeColor ? String(d.person.eyeColor).toLowerCase() : '';
+        const hairStr = d.person && d.person.hairColor ? String(d.person.hairColor).toLowerCase() : '';
+        const natStr = d.person && d.person.nationality ? String(d.person.nationality).toLowerCase() : '';
 
         if (idQ && !idStr.includes(idQ)) return false;
         if (nameQ && !nameStr.includes(nameQ)) return false;
@@ -61,6 +70,9 @@ const filteredTableData = computed(() => {
         if (commentQ && !commentStr.includes(commentQ)) return false;
         if (coordXQ && !coordXStr.includes(coordXQ)) return false;
         if (coordYQ && !coordYStr.includes(coordYQ)) return false;
+        if (eyeQ && !eyeStr.includes(eyeQ)) return false;
+        if (hairQ && !hairStr.includes(hairQ)) return false;
+        if (natQ && !natStr.includes(natQ)) return false;
         return true;
     });
 });
@@ -77,11 +89,11 @@ function cancelEdit() {
     draftValue.value = '';
 }
 
-async function commitEdit(dummy) {
-    if (editingId.value !== dummy.id) return;
-    const payload = { ...dummy, [editingField.value]: draftValue.value };
+async function commitEdit(ticket) {
+    if (editingId.value !== ticket.id) return;
+    const payload = { ...ticket, [editingField.value]: draftValue.value };
     try {
-        const response = await fetch('http://' + import.meta.env.VITE_BACKEND_SOCKET + '/api/ticket/' + dummy.id, {
+        const response = await fetch('http://' + import.meta.env.VITE_BACKEND_SOCKET + '/api/ticket/' + ticket.id, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
@@ -96,7 +108,7 @@ async function commitEdit(dummy) {
     }
 }
 
-async function removeDummy(id) {
+async function removeTicket(id) {
     try {
         const response = await fetch('http://' + import.meta.env.VITE_BACKEND_SOCKET + '/api/ticket/' + id, {
             method: 'DELETE'
@@ -127,6 +139,9 @@ async function removeDummy(id) {
                     <th>Comment</th>
                     <th>Coord X</th>
                     <th>Coord Y</th>
+                    <th>Eye</th>
+                    <th>Hair</th>
+                    <th>Nationality</th>
                     <th></th>
                 </tr>
                 <tr class="filters-row">
@@ -143,40 +158,46 @@ async function removeDummy(id) {
                     <th><input type="text" v-model="filterComment" placeholder="Filter comment" /></th>
                     <th><input type="text" v-model="filterCoordX" placeholder="Filter x" /></th>
                     <th><input type="text" v-model="filterCoordY" placeholder="Filter y" /></th>
+                    <th><input type="text" v-model="filterEye" placeholder="Filter eye" /></th>
+                    <th><input type="text" v-model="filterHair" placeholder="Filter hair" /></th>
+                    <th><input type="text" v-model="filterNationality" placeholder="Filter nationality" /></th>
                     <th></th>
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="dummy in filteredTableData" :key="dummy.id">
-                    <td>{{ dummy.id }}</td>
+                <tr v-for="ticket in filteredTableData" :key="ticket.id">
+                    <td>{{ ticket.id }}</td>
                     <td>
-                        <span v-if="!(editingId === dummy.id && editingField === 'name')" @dblclick="startEdit(dummy.id, 'name', dummy.name)">{{ dummy.name }}</span>
-                        <input v-else v-model="draftValue" @keyup.enter="commitEdit(dummy)" @blur="cancelEdit" />
+                        <span v-if="!(editingId === ticket.id && editingField === 'name')" @dblclick="startEdit(ticket.id, 'name', ticket.name)">{{ ticket.name }}</span>
+                        <input v-else v-model="draftValue" @keyup.enter="commitEdit(ticket)" @blur="cancelEdit" />
                     </td>
                     <td>
-                        <span v-if="!(editingId === dummy.id && editingField === 'price')" @dblclick="startEdit(dummy.id, 'price', dummy.price)">{{ dummy.price }}</span>
-                        <input v-else v-model="draftValue" @keyup.enter="commitEdit(dummy)" @blur="cancelEdit" />
+                        <span v-if="!(editingId === ticket.id && editingField === 'price')" @dblclick="startEdit(ticket.id, 'price', ticket.price)">{{ ticket.price }}</span>
+                        <input v-else v-model="draftValue" @keyup.enter="commitEdit(ticket)" @blur="cancelEdit" />
                     </td>
                     <td>
-                        <span v-if="!(editingId === dummy.id && editingField === 'type')" @dblclick="startEdit(dummy.id, 'type', dummy.type)">{{ dummy.type }}</span>
-                        <input v-else v-model="draftValue" @keyup.enter="commitEdit(dummy)" @blur="cancelEdit" />
+                        <span v-if="!(editingId === ticket.id && editingField === 'type')" @dblclick="startEdit(ticket.id, 'type', ticket.type)">{{ ticket.type }}</span>
+                        <input v-else v-model="draftValue" @keyup.enter="commitEdit(ticket)" @blur="cancelEdit" />
                     </td>
                     <td>
-                        <span v-if="!(editingId === dummy.id && editingField === 'discount')" @dblclick="startEdit(dummy.id, 'discount', dummy.discount)">{{ dummy.discount }}</span>
-                        <input v-else v-model="draftValue" @keyup.enter="commitEdit(dummy)" @blur="cancelEdit" />
+                        <span v-if="!(editingId === ticket.id && editingField === 'discount')" @dblclick="startEdit(ticket.id, 'discount', ticket.discount)">{{ ticket.discount }}</span>
+                        <input v-else v-model="draftValue" @keyup.enter="commitEdit(ticket)" @blur="cancelEdit" />
                     </td>
                     <td>
-                        <span v-if="!(editingId === dummy.id && editingField === 'number')" @dblclick="startEdit(dummy.id, 'number', dummy.number)">{{ dummy.number }}</span>
-                        <input v-else v-model="draftValue" @keyup.enter="commitEdit(dummy)" @blur="cancelEdit" />
+                        <span v-if="!(editingId === ticket.id && editingField === 'number')" @dblclick="startEdit(ticket.id, 'number', ticket.number)">{{ ticket.number }}</span>
+                        <input v-else v-model="draftValue" @keyup.enter="commitEdit(ticket)" @blur="cancelEdit" />
                     </td>
                     <td>
-                        <span v-if="!(editingId === dummy.id && editingField === 'comment')" @dblclick="startEdit(dummy.id, 'comment', dummy.comment)">{{ dummy.comment }}</span>
-                        <input v-else v-model="draftValue" @keyup.enter="commitEdit(dummy)" @blur="cancelEdit" />
+                        <span v-if="!(editingId === ticket.id && editingField === 'comment')" @dblclick="startEdit(ticket.id, 'comment', ticket.comment)">{{ ticket.comment }}</span>
+                        <input v-else v-model="draftValue" @keyup.enter="commitEdit(ticket)" @blur="cancelEdit" />
                     </td>
-                    <td>{{ dummy.coordinates && dummy.coordinates.x }}</td>
-                    <td>{{ dummy.coordinates && dummy.coordinates.y }}</td>
+                    <td>{{ ticket.coordinates && ticket.coordinates.x }}</td>
+                    <td>{{ ticket.coordinates && ticket.coordinates.y }}</td>
+                    <td>{{ ticket.person && ticket.person.eyeColor }}</td>
+                    <td>{{ ticket.person && ticket.person.hairColor }}</td>
+                    <td>{{ ticket.person && ticket.person.nationality }}</td>
                     <td>
-                        <button class="danger" @click="removeDummy(dummy.id)">Delete</button>
+                        <button class="danger" @click="removeTicket(ticket.id)">Delete</button>
                     </td>
                 </tr>
             </tbody>

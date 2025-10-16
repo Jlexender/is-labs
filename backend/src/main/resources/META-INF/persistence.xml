@@ -5,12 +5,11 @@
                                  http://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd"
              version="3.0">
   
-  <persistence-unit name="dummyPU" transaction-type="JTA">
+  <persistence-unit name="ticketPU" transaction-type="JTA">
     <jta-data-source>java:/PostgresDS</jta-data-source>
-    <class>org.example.domain.Dummy</class>
 
     <properties>
-      <property name="jakarta.persistence.schema-generation.database.action" value="update"/>
+      <property name="jakarta.persistence.schema-generation.database.action" value="drop-and-create"/>
       <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
       <property name="hibernate.show_sql" value="true"/>
       <property name="hibernate.format_sql" value="true"/>

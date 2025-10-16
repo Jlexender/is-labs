@@ -10,6 +10,15 @@ const number = ref('');
 const comment = ref('');
 const coordX = ref('');
 const coordY = ref('');
+// Person (embedded)
+const eyeColor = ref('');
+const hairColor = ref('');
+const nationality = ref('');
+const birthday = ref('');
+const locX = ref('');
+const locY = ref('');
+const locZ = ref('');
+const locName = ref('');
 const isSubmitting = ref(false);
 const errorMessage = ref('');
 
@@ -31,7 +40,21 @@ async function submit() {
                 type: type.value || null,
                 discount: parseInt(discount.value || 0),
                 number: parseInt(number.value || 0),
-                comment: comment.value || null
+                comment: comment.value || null,
+                person: (eyeColor.value || hairColor.value || nationality.value || birthday.value || locX.value || locY.value || locZ.value || locName.value)
+                    ? {
+                        eyeColor: eyeColor.value || null,
+                        hairColor: hairColor.value || null,
+                        nationality: nationality.value || null,
+                        birthday: birthday.value ? new Date(birthday.value).toISOString() : null,
+                        location: {
+                            x: locX.value === '' ? null : parseInt(locX.value),
+                            y: locY.value === '' ? 0 : parseInt(locY.value),
+                            z: locZ.value === '' ? 0 : parseInt(locZ.value),
+                            locationName: locName.value || null
+                        }
+                    }
+                    : null
             })
         });
         if (!response.ok) {
@@ -47,6 +70,14 @@ async function submit() {
         comment.value = '';
         coordX.value = '';
         coordY.value = '';
+        eyeColor.value = '';
+        hairColor.value = '';
+        nationality.value = '';
+        birthday.value = '';
+        locX.value = '';
+        locY.value = '';
+        locZ.value = '';
+        locName.value = '';
     } catch (e) {
         errorMessage.value = e.message || 'Unknown error';
     } finally {
@@ -86,6 +117,47 @@ async function submit() {
             <input v-model="coordY" type="number" placeholder="y (<=315)" />
         </div>
 
+        <h3>Person (optional)</h3>
+        <label for="eyeColor">Eye color</label>
+        <select id="eyeColor" v-model="eyeColor">
+            <option value="">(none)</option>
+            <option>GREEN</option>
+            <option>RED</option>
+            <option>BLUE</option>
+            <option>YELLOW</option>
+        </select>
+
+        <label for="hairColor">Hair color</label>
+        <select id="hairColor" v-model="hairColor">
+            <option value="">(none)</option>
+            <option>GREEN</option>
+            <option>RED</option>
+            <option>BLUE</option>
+            <option>YELLOW</option>
+        </select>
+
+        <label for="nationality">Nationality</label>
+        <select id="nationality" v-model="nationality">
+            <option value="">(none)</option>
+            <option>INDIA</option>
+            <option>THAILAND</option>
+            <option>SOUTH_KOREA</option>
+            <option>JAPAN</option>
+        </select>
+
+        <label for="birthday">Birthday</label>
+        <input id="birthday" v-model="birthday" type="date" />
+
+        <label>Person Location</label>
+        <div class="grid-2">
+            <input v-model="locX" type="number" placeholder="x" />
+            <input v-model="locY" type="number" placeholder="y" />
+        </div>
+        <div class="grid-2">
+            <input v-model="locZ" type="number" placeholder="z" />
+            <input v-model="locName" type="text" placeholder="name" />
+        </div>
+
         <button type="submit" :disabled="isSubmitting">{{ isSubmitting ? 'Creating...' : 'Create' }}</button>
         <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
     </form>
@@ -115,6 +187,8 @@ select {
     background: #0f172a;
     color: #e5e7eb;
 }
+
+h3 { grid-column: 1 / -1; margin-top: 8px; }
 
 input::placeholder {
     color: #9ca3af;

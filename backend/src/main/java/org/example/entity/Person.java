@@ -1,0 +1,40 @@
+package org.example.entity;
+
+import java.util.Date;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.EnumType;
+import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Embeddable
+public class Person {
+    @Enumerated(EnumType.STRING)
+    Color eyeColor; // nullable
+
+    @Enumerated(EnumType.STRING)
+    Color hairColor; // nullable
+
+    @Embedded
+    @NotNull
+    Location location;
+
+    Date birthday; // nullable
+
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    Country nationality;
+}
+

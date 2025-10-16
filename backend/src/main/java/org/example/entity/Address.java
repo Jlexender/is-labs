@@ -4,17 +4,13 @@ import jakarta.persistence.Embeddable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import jakarta.validation.constraints.*;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class Coordinates {
-    @Max(397)
-    double x; // max 397
-
-    @NotNull
-    @Max(315)
-    Integer y; // not null, max 315
+public class Address {
+    String street; // nullable
+    String town; // nullable
 }
+
