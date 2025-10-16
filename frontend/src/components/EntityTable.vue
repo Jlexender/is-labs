@@ -149,28 +149,30 @@ async function removeDummy(id) {
 
 table {
     margin-top: 8px;
-    background: white;
+    background: #0f172a;
     border-radius: 6px;
     overflow: hidden;
 }
 
 button.danger {
     padding: 6px 10px;
-    background: #ef4444;
-    color: white;
+    background: #dc2626;
+    color: #f9fafb;
     border: none;
     border-radius: 6px;
     cursor: pointer;
 }
 
 thead .filters-row th {
-    background: #fff;
+    background: #0f172a;
 }
 
 thead input[type="text"] {
     width: 100%;
     padding: 6px 8px;
-    border: 1px solid #e5e7eb;
+    border: 1px solid #1f2937;
     border-radius: 6px;
+    background: #111827;
+    color: #e5e7eb;
 }
 </style>

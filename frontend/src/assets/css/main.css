@@ -17,8 +17,8 @@ html, body, #app {
 
 body {
     font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
-    color: #1f2937; /* gray-800 */
-    background: #f8fafc; /* slate-50 */
+    color: #e5e7eb; /* gray-200 */
+    background: #0b1220; /* deep dark */
     line-height: 1.5;
 }
 
@@ -30,8 +30,8 @@ body {
 }
 
 header {
-    background: white;
-    border-bottom: 1px solid #e5e7eb; /* gray-200 */
+    background: #0f172a; /* slate-900 */
+    border-bottom: 1px solid #1f2937; /* gray-800 */
 }
 
 header .wrapper {
@@ -43,13 +43,13 @@ header .wrapper {
 }
 
 nav a {
-    color: #2563eb; /* blue-600 */
+    color: #60a5fa; /* blue-400 */
     text-decoration: none;
     font-weight: 600;
 }
 
 nav a.router-link-active {
-    color: #1d4ed8; /* blue-700 */
+    color: #93c5fd; /* blue-300 */
 }
 
 .view-wrapper {
@@ -63,11 +63,11 @@ nav a.router-link-active {
 .view-card {
     width: 100%;
     max-width: 960px;
-    background: white;
-    border: 1px solid #e5e7eb;
+    background: #0f172a; /* slate-900 */
+    border: 1px solid #1f2937; /* gray-800 */
     border-radius: 8px;
     padding: 24px;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.35);
 }
 
 /* Minimal typography */
@@ -94,17 +94,30 @@ table {
 thead th {
     text-align: left;
     font-weight: 600;
-    color: #374151; /* gray-700 */
+    color: #e5e7eb; /* gray-200 */
     padding: 8px 10px;
-    border-bottom: 1px solid #e5e7eb;
-    background: #f9fafb;
+    border-bottom: 1px solid #1f2937; /* gray-800 */
+    background: #111827; /* gray-900 */
 }
 
 tbody td {
     padding: 10px;
-    border-bottom: 1px solid #f1f5f9; /* slate-100 */
+    border-bottom: 1px solid #0b1220; /* match bg seam */
 }
 
 tbody tr:hover {
-    background: #f8fafc;
+    background: #111827;
+}
+
+/* Form controls */
+input[type="text"],
+input[type="search"],
+textarea, select {
+    background: #111827;
+    color: #e5e7eb;
+    border: 1px solid #1f2937;
+}
+
+button {
+    color: #e5e7eb;
 }

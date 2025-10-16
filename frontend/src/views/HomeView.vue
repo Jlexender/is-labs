@@ -69,15 +69,17 @@ async function submit() {
 
 .create-form input[type="text"] {
     padding: 10px 12px;
-    border: 1px solid #e5e7eb;
+    border: 1px solid #1f2937;
     border-radius: 6px;
+    background: #111827;
+    color: #e5e7eb;
 }
 
 .create-form button {
     width: fit-content;
     padding: 10px 12px;
     background: #2563eb;
-    color: white;
+    color: #f9fafb;
     border: none;
     border-radius: 6px;
     cursor: pointer;
