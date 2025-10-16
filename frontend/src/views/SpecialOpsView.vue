@@ -221,18 +221,6 @@ async function sellTicket() {
                 <pre>{{ JSON.stringify(sellResult, null, 2) }}</pre>
             </div>
         </section>
-
-        <section class="operation">
-            <h2>5. Cancel Event</h2>
-            <input v-model="cancelEventId" type="number" placeholder="Enter event ID" />
-            <button @click="cancelEvent" :disabled="cancelLoading" class="danger">
-                {{ cancelLoading ? 'Processing...' : 'Cancel Event' }}
-            </button>
-            <div v-if="cancelError" class="error">{{ cancelError }}</div>
-            <div v-if="cancelResult" class="result success">
-                {{ cancelResult }}
-            </div>
-        </section>
     </div>
 </template>
 
