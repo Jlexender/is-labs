@@ -62,7 +62,7 @@ nav a.router-link-active {
 
 .view-card {
     width: 100%;
-    max-width: 960px;
+    max-width: 1280px;
     background: #0f172a; /* slate-900 */
     border: 1px solid #1f2937; /* gray-800 */
     border-radius: 8px;

@@ -5,7 +5,7 @@ const tableData = inject('tableData');
 
 onMounted(async () => {
     try {
-        const response = await fetch('http://' + import.meta.env.VITE_BACKEND_SOCKET + '/api/dummy/all');
+        const response = await fetch('http://' + import.meta.env.VITE_BACKEND_SOCKET + '/api/ticket/all');
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }
@@ -23,24 +23,44 @@ const draftValue = ref('');
 
 const filterId = ref('');
 const filterName = ref('');
-const filterDescription = ref('');
-const filterCreatedAt = ref('');
+const filterPrice = ref('');
+const filterType = ref('');
+const filterDiscount = ref('');
+const filterNumber = ref('');
+const filterComment = ref('');
+const filterCoordX = ref('');
+const filterCoordY = ref('');
 
 const filteredTableData = computed(() => {
     const idQ = filterId.value.trim().toLowerCase();
     const nameQ = filterName.value.trim().toLowerCase();
-    const descQ = filterDescription.value.trim().toLowerCase();
-    const createdQ = filterCreatedAt.value.trim().toLowerCase();
+    const priceQ = filterPrice.value.trim().toLowerCase();
+    const typeQ = filterType.value.trim().toLowerCase();
+    const discountQ = filterDiscount.value.trim().toLowerCase();
+    const numberQ = filterNumber.value.trim().toLowerCase();
+    const commentQ = filterComment.value.trim().toLowerCase();
+    const coordXQ = filterCoordX.value.trim().toLowerCase();
+    const coordYQ = filterCoordY.value.trim().toLowerCase();
     return tableData.value.filter(d => {
         const idStr = d.id == null ? '' : String(d.id).toLowerCase();
         const nameStr = d.name == null ? '' : String(d.name).toLowerCase();
-        const descStr = d.description == null ? '' : String(d.description).toLowerCase();
-        const createdStr = d.createdAt == null ? '' : String(d.createdAt).toLowerCase();
+        const priceStr = d.price == null ? '' : String(d.price).toLowerCase();
+        const typeStr = d.type == null ? '' : String(d.type).toLowerCase();
+        const discountStr = d.discount == null ? '' : String(d.discount).toLowerCase();
+        const numberStr = d.number == null ? '' : String(d.number).toLowerCase();
+        const commentStr = d.comment == null ? '' : String(d.comment).toLowerCase();
+        const coordXStr = d.coordinates && d.coordinates.x != null ? String(d.coordinates.x).toLowerCase() : '';
+        const coordYStr = d.coordinates && d.coordinates.y != null ? String(d.coordinates.y).toLowerCase() : '';
 
         if (idQ && !idStr.includes(idQ)) return false;
         if (nameQ && !nameStr.includes(nameQ)) return false;
-        if (descQ && !descStr.includes(descQ)) return false;
-        if (createdQ && !createdStr.includes(createdQ)) return false;
+        if (priceQ && !priceStr.includes(priceQ)) return false;
+        if (typeQ && !typeStr.includes(typeQ)) return false;
+        if (discountQ && !discountStr.includes(discountQ)) return false;
+        if (numberQ && !numberStr.includes(numberQ)) return false;
+        if (commentQ && !commentStr.includes(commentQ)) return false;
+        if (coordXQ && !coordXStr.includes(coordXQ)) return false;
+        if (coordYQ && !coordYStr.includes(coordYQ)) return false;
         return true;
     });
 });
@@ -61,7 +81,7 @@ async function commitEdit(dummy) {
     if (editingId.value !== dummy.id) return;
     const payload = { ...dummy, [editingField.value]: draftValue.value };
     try {
-        const response = await fetch('http://' + import.meta.env.VITE_BACKEND_SOCKET + '/api/dummy/' + dummy.id, {
+        const response = await fetch('http://' + import.meta.env.VITE_BACKEND_SOCKET + '/api/ticket/' + dummy.id, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
@@ -78,7 +98,7 @@ async function commitEdit(dummy) {
 
 async function removeDummy(id) {
     try {
-        const response = await fetch('http://' + import.meta.env.VITE_BACKEND_SOCKET + '/api/dummy/' + id, {
+        const response = await fetch('http://' + import.meta.env.VITE_BACKEND_SOCKET + '/api/ticket/' + id, {
             method: 'DELETE'
         });
         if (!response.ok) {
@@ -94,14 +114,19 @@ async function removeDummy(id) {
 
 <template>
     <div class="entity-panel">
-        <h2>Dummy Table</h2>
+        <h2>Tickets</h2>
         <table>
             <thead>
                 <tr>
                     <th>ID</th>
                     <th>Name</th>
-                    <th>Description</th>
-                    <th>Created at</th>
+                    <th>Price</th>
+                    <th>Type</th>
+                    <th>Discount</th>
+                    <th>Number</th>
+                    <th>Comment</th>
+                    <th>Coord X</th>
+                    <th>Coord Y</th>
                     <th></th>
                 </tr>
                 <tr class="filters-row">
@@ -111,12 +136,13 @@ async function removeDummy(id) {
                     <th>
                         <input type="text" v-model="filterName" placeholder="Filter name" />
                     </th>
-                    <th>
-                        <input type="text" v-model="filterDescription" placeholder="Filter description" />
-                    </th>
-                    <th>
-                        <input type="text" v-model="filterCreatedAt" placeholder="Filter created" />
-                    </th>
+                    <th><input type="text" v-model="filterPrice" placeholder="Filter price" /></th>
+                    <th><input type="text" v-model="filterType" placeholder="Filter type" /></th>
+                    <th><input type="text" v-model="filterDiscount" placeholder="Filter discount" /></th>
+                    <th><input type="text" v-model="filterNumber" placeholder="Filter number" /></th>
+                    <th><input type="text" v-model="filterComment" placeholder="Filter comment" /></th>
+                    <th><input type="text" v-model="filterCoordX" placeholder="Filter x" /></th>
+                    <th><input type="text" v-model="filterCoordY" placeholder="Filter y" /></th>
                     <th></th>
                 </tr>
             </thead>
@@ -128,10 +154,27 @@ async function removeDummy(id) {
                         <input v-else v-model="draftValue" @keyup.enter="commitEdit(dummy)" @blur="cancelEdit" />
                     </td>
                     <td>
-                        <span v-if="!(editingId === dummy.id && editingField === 'description')" @dblclick="startEdit(dummy.id, 'description', dummy.description)">{{ dummy.description }}</span>
+                        <span v-if="!(editingId === dummy.id && editingField === 'price')" @dblclick="startEdit(dummy.id, 'price', dummy.price)">{{ dummy.price }}</span>
                         <input v-else v-model="draftValue" @keyup.enter="commitEdit(dummy)" @blur="cancelEdit" />
                     </td>
-                    <td>{{ dummy.createdAt }}</td>
+                    <td>
+                        <span v-if="!(editingId === dummy.id && editingField === 'type')" @dblclick="startEdit(dummy.id, 'type', dummy.type)">{{ dummy.type }}</span>
+                        <input v-else v-model="draftValue" @keyup.enter="commitEdit(dummy)" @blur="cancelEdit" />
+                    </td>
+                    <td>
+                        <span v-if="!(editingId === dummy.id && editingField === 'discount')" @dblclick="startEdit(dummy.id, 'discount', dummy.discount)">{{ dummy.discount }}</span>
+                        <input v-else v-model="draftValue" @keyup.enter="commitEdit(dummy)" @blur="cancelEdit" />
+                    </td>
+                    <td>
+                        <span v-if="!(editingId === dummy.id && editingField === 'number')" @dblclick="startEdit(dummy.id, 'number', dummy.number)">{{ dummy.number }}</span>
+                        <input v-else v-model="draftValue" @keyup.enter="commitEdit(dummy)" @blur="cancelEdit" />
+                    </td>
+                    <td>
+                        <span v-if="!(editingId === dummy.id && editingField === 'comment')" @dblclick="startEdit(dummy.id, 'comment', dummy.comment)">{{ dummy.comment }}</span>
+                        <input v-else v-model="draftValue" @keyup.enter="commitEdit(dummy)" @blur="cancelEdit" />
+                    </td>
+                    <td>{{ dummy.coordinates && dummy.coordinates.x }}</td>
+                    <td>{{ dummy.coordinates && dummy.coordinates.y }}</td>
                     <td>
                         <button class="danger" @click="removeDummy(dummy.id)">Delete</button>
                     </td>

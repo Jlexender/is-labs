@@ -66,6 +66,44 @@ public class WebSocket {
         }
     }
 
+    public static void ticketCreated(org.example.entity.Ticket ticket) {
+        try {
+            String message = """
+                    {
+                        "type": "TICKET_CREATED",
+                        "data": %s
+                    }
+                    """.formatted(objectMapper.writeValueAsString(ticket));
+            broadcast(message);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void ticketDeleted(Long id) {
+        String message = """
+                    {
+                        "type": "TICKET_DELETED",
+                        "data": %s
+                    }
+                    """.formatted(id);
+        broadcast(message);
+    }
+
+    public static void ticketUpdated(org.example.entity.Ticket ticket) {
+        try {
+            String message = """
+                    {
+                        "type": "TICKET_UPDATED",
+                        "data": %s
+                    }
+                    """.formatted(objectMapper.writeValueAsString(ticket));
+            broadcast(message);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void broadcast(String message) {
         for (Session session : sessions) {
             if (session.isOpen()) {

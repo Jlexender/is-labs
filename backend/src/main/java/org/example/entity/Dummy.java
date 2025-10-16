@@ -6,6 +6,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,8 +20,10 @@ public class Dummy {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
+    @NotEmpty
     String name;
 
+    @NotEmpty
     String description;
 
     LocalDateTime createdAt = LocalDateTime.now();

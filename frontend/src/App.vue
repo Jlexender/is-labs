@@ -13,16 +13,16 @@ const tableData = ref([]);
 socket.onmessage = (event) => {
   const message = JSON.parse(event.data);
   switch (message.type) {
-    case 'DUMMY_CREATED':
-      console.log('New dummy created:', message.data);
+    case 'TICKET_CREATED':
+      console.log('Ticket created:', message.data);
       tableData.value.push(message.data);
       break;
-    case 'DUMMY_DELETED':
-      console.log('Dummy deleted:', message.data);
+    case 'TICKET_DELETED':
+      console.log('Ticket deleted:', message.data);
       tableData.value = tableData.value.filter(item => item.id !== parseInt(message.data));
       break;
-    case 'DUMMY_UPDATED':
-      console.log('Dummy updated:', message.data);
+    case 'TICKET_UPDATED':
+      console.log('Ticket updated:', message.data);
       tableData.value = tableData.value.map(item => item.id === message.data.id ? message.data : item);
       break;
   }
