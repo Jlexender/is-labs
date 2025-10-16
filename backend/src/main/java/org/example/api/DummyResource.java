@@ -25,6 +25,15 @@ public class DummyResource {
         return Response.ok(dummy).build();
     }
 
+    @POST
+    @Path("/create")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response createDummy(Dummy dummy) {
+        Dummy createdDummy = dummyService.save(dummy);
+        WebSocket.dummyCreated(createdDummy);
+        return Response.ok(createdDummy).build();
+    }
+
     @GET
     @Path("/all")
     public Response getAllDummies() {
@@ -39,4 +48,15 @@ public class DummyResource {
         return Response.ok(count).build();
     }
 
+    @DELETE
+    @Path("/{id}")
+    public Response deleteDummy(@PathParam("id") Long id) {
+        Dummy existing = dummyService.findById(id);
+        if (existing == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        dummyService.deleteById(id);
+        WebSocket.dummyDeleted(id);
+        return Response.noContent().build();
+    }
 }

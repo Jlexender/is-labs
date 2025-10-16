@@ -21,5 +21,7 @@ public class Dummy {
 
     String name;
 
+    String description;
+
     LocalDateTime createdAt = LocalDateTime.now();
 }

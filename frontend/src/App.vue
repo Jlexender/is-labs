@@ -17,6 +17,10 @@ socket.onmessage = (event) => {
       console.log('New dummy created:', message.data);
       tableData.value.push(message.data);
       break;
+    case 'DUMMY_DELETED':
+      console.log('Dummy deleted:', message.data);
+      tableData.value = tableData.value.filter(item => item.id !== parseInt(message.data));
+      break;
   }
 };
 
@@ -24,16 +28,22 @@ provide('tableData', tableData);
 </script>
 
 <template>
-  <header>
-    <div class="wrapper">
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/special-ops">Special Ops</RouterLink>
-      </nav>
-    </div>
-  </header>
+  <div class="app-container">
+    <header>
+      <div class="wrapper">
+        <nav>
+          <RouterLink to="/">Home</RouterLink>
+          <RouterLink to="/special-ops">Special Ops</RouterLink>
+        </nav>
+      </div>
+    </header>
 
-  <RouterView />
+    <main class="view-wrapper">
+      <div class="view-card">
+        <RouterView />
+      </div>
+    </main>
+  </div>
 </template>
 
 <style scoped></style>

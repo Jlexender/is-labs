@@ -42,6 +42,16 @@ public class WebSocket {
         }
     }
 
+    public static void dummyDeleted(Long id) {
+        String message = """
+                    {
+                        "type": "DUMMY_DELETED",
+                        "data": %s
+                    }
+                    """.formatted(id);
+        broadcast(message);
+    }
+
     public static void broadcast(String message) {
         for (Session session : sessions) {
             if (session.isOpen()) {
