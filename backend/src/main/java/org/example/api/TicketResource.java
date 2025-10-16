@@ -51,4 +51,58 @@ public class TicketResource {
         WebSocket.ticketUpdated(updated);
         return Response.ok(updated).build();
     }
+
+    // Special operations
+
+    @GET
+    @Path("/min-number")
+    public Response getTicketWithMinNumber() {
+        Ticket ticket = ticketService.findMinByNumber();
+        if (ticket == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        return Response.ok(ticket).build();
+    }
+
+    @GET
+    @Path("/count-less-than/{number}")
+    public Response countTicketsWithNumberLessThan(@PathParam("number") long number) {
+        long count = ticketService.countByNumberLessThan(number);
+        return Response.ok(count).build();
+    }
+
+    @GET
+    @Path("/by-comment-prefix")
+    public Response getTicketsByCommentPrefix(@QueryParam("prefix") String prefix) {
+        if (prefix == null || prefix.isEmpty()) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("Query parameter 'prefix' is required").build();
+        }
+        return Response.ok(ticketService.findByCommentStartsWith(prefix)).build();
+    }
+
+    @POST
+    @Path("/sell/{ticketId}")
+    public Response sellTicket(
+            @PathParam("ticketId") Long ticketId,
+            @QueryParam("price") float price,
+            org.example.entity.Person person) {
+        try {
+            Ticket sold = ticketService.sellTicket(ticketId, price, person);
+            WebSocket.ticketUpdated(sold);
+            return Response.ok(sold).build();
+        } catch (IllegalArgumentException e) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity(e.getMessage()).build();
+        }
+    }
+
+    @DELETE
+    @Path("/cancel-event/{eventId}")
+    public Response cancelEvent(@PathParam("eventId") Long eventId) {
+        int deletedCount = ticketService.cancelEvent(eventId);
+        return Response.ok()
+                .entity("Deleted " + deletedCount + " tickets for event " + eventId)
+                .build();
+    }
 }

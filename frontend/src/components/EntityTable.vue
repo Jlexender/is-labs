@@ -33,6 +33,8 @@ const filterCoordY = ref('');
 const filterEye = ref('');
 const filterHair = ref('');
 const filterNationality = ref('');
+const filterEventName = ref('');
+const filterEventType = ref('');
 
 const filteredTableData = computed(() => {
     const idQ = filterId.value.trim().toLowerCase();
@@ -47,6 +49,8 @@ const filteredTableData = computed(() => {
     const eyeQ = filterEye.value.trim().toLowerCase();
     const hairQ = filterHair.value.trim().toLowerCase();
     const natQ = filterNationality.value.trim().toLowerCase();
+    const eventNameQ = filterEventName.value.trim().toLowerCase();
+    const eventTypeQ = filterEventType.value.trim().toLowerCase();
     return tableData.value.filter(d => {
         const idStr = d.id == null ? '' : String(d.id).toLowerCase();
         const nameStr = d.name == null ? '' : String(d.name).toLowerCase();
@@ -60,6 +64,8 @@ const filteredTableData = computed(() => {
         const eyeStr = d.person && d.person.eyeColor ? String(d.person.eyeColor).toLowerCase() : '';
         const hairStr = d.person && d.person.hairColor ? String(d.person.hairColor).toLowerCase() : '';
         const natStr = d.person && d.person.nationality ? String(d.person.nationality).toLowerCase() : '';
+        const eventNameStr = d.event && d.event.eventName ? String(d.event.eventName).toLowerCase() : '';
+        const eventTypeStr = d.event && d.event.eventType ? String(d.event.eventType).toLowerCase() : '';
 
         if (idQ && !idStr.includes(idQ)) return false;
         if (nameQ && !nameStr.includes(nameQ)) return false;
@@ -73,6 +79,8 @@ const filteredTableData = computed(() => {
         if (eyeQ && !eyeStr.includes(eyeQ)) return false;
         if (hairQ && !hairStr.includes(hairQ)) return false;
         if (natQ && !natStr.includes(natQ)) return false;
+        if (eventNameQ && !eventNameStr.includes(eventNameQ)) return false;
+        if (eventTypeQ && !eventTypeStr.includes(eventTypeQ)) return false;
         return true;
     });
 });
@@ -142,6 +150,9 @@ async function removeTicket(id) {
                     <th>Eye</th>
                     <th>Hair</th>
                     <th>Nationality</th>
+                    <th>Event Name</th>
+                    <th>Event Type</th>
+                    <th>Event Tickets</th>
                     <th></th>
                 </tr>
                 <tr class="filters-row">
@@ -161,6 +172,9 @@ async function removeTicket(id) {
                     <th><input type="text" v-model="filterEye" placeholder="Filter eye" /></th>
                     <th><input type="text" v-model="filterHair" placeholder="Filter hair" /></th>
                     <th><input type="text" v-model="filterNationality" placeholder="Filter nationality" /></th>
+                    <th><input type="text" v-model="filterEventName" placeholder="Filter event name" /></th>
+                    <th><input type="text" v-model="filterEventType" placeholder="Filter event type" /></th>
+                    <th></th>
                     <th></th>
                 </tr>
             </thead>
@@ -196,6 +210,9 @@ async function removeTicket(id) {
                     <td>{{ ticket.person && ticket.person.eyeColor }}</td>
                     <td>{{ ticket.person && ticket.person.hairColor }}</td>
                     <td>{{ ticket.person && ticket.person.nationality }}</td>
+                    <td>{{ ticket.event && ticket.event.eventName }}</td>
+                    <td>{{ ticket.event && ticket.event.eventType }}</td>
+                    <td>{{ ticket.event && ticket.event.ticketsCount }}</td>
                     <td>
                         <button class="danger" @click="removeTicket(ticket.id)">Delete</button>
                     </td>

@@ -61,4 +61,48 @@ public class TicketService {
         existing.setVenue(updated.getVenue());
         return entityManager.merge(existing);
     }
+
+    // Special operations
+
+    public Ticket findMinByNumber() {
+        return entityManager.createQuery(
+                "SELECT t FROM Ticket t ORDER BY t.number ASC", Ticket.class)
+                .setMaxResults(1)
+                .getResultStream()
+                .findFirst()
+                .orElse(null);
+    }
+
+    public long countByNumberLessThan(long number) {
+        return entityManager.createQuery(
+                "SELECT COUNT(t) FROM Ticket t WHERE t.number < :number", Long.class)
+                .setParameter("number", number)
+                .getSingleResult();
+    }
+
+    public List<Ticket> findByCommentStartsWith(String prefix) {
+        return entityManager.createQuery(
+                "SELECT t FROM Ticket t WHERE t.comment LIKE :prefix", Ticket.class)
+                .setParameter("prefix", prefix + "%")
+                .getResultList();
+    }
+
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
+    public Ticket sellTicket(Long ticketId, float price, org.example.entity.Person person) {
+        Ticket ticket = findById(ticketId);
+        if (ticket == null) {
+            throw new IllegalArgumentException("Ticket not found");
+        }
+        ticket.setPrice(price);
+        ticket.setPerson(person);
+        return entityManager.merge(ticket);
+    }
+
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
+    public int cancelEvent(Long eventId) {
+        return entityManager.createQuery(
+                "DELETE FROM Ticket t WHERE t.event.id = :eventId")
+                .setParameter("eventId", eventId)
+                .executeUpdate();
+    }
 }

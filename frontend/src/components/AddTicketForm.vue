@@ -19,6 +19,10 @@ const locX = ref('');
 const locY = ref('');
 const locZ = ref('');
 const locName = ref('');
+// Event (embedded)
+const eventName = ref('');
+const eventType = ref('');
+const eventTicketsCount = ref('');
 const isSubmitting = ref(false);
 const errorMessage = ref('');
 
@@ -41,6 +45,13 @@ async function submit() {
                 discount: parseInt(discount.value || 0),
                 number: parseInt(number.value || 0),
                 comment: comment.value || null,
+                event: (eventName.value || eventType.value || eventTicketsCount.value)
+                    ? {
+                        eventName: eventName.value || null,
+                        eventType: eventType.value || null,
+                        ticketsCount: eventTicketsCount.value ? parseInt(eventTicketsCount.value) : 0
+                    }
+                    : null,
                 person: (eyeColor.value || hairColor.value || nationality.value || birthday.value || locX.value || locY.value || locZ.value || locName.value)
                     ? {
                         eyeColor: eyeColor.value || null,
@@ -78,6 +89,9 @@ async function submit() {
         locY.value = '';
         locZ.value = '';
         locName.value = '';
+        eventName.value = '';
+        eventType.value = '';
+        eventTicketsCount.value = '';
     } catch (e) {
         errorMessage.value = e.message || 'Unknown error';
     } finally {
@@ -116,6 +130,22 @@ async function submit() {
             <input v-model="coordX" type="number" step="0.01" placeholder="x (<=397)" />
             <input v-model="coordY" type="number" placeholder="y (<=315)" />
         </div>
+
+        <h3>Event (optional)</h3>
+        <label for="eventName">Event Name</label>
+        <input id="eventName" v-model="eventName" type="text" placeholder="Event name" />
+
+        <label for="eventType">Event Type</label>
+        <select id="eventType" v-model="eventType">
+            <option value="">(none)</option>
+            <option>FOOTBALL</option>
+            <option>BASEBALL</option>
+            <option>THEATRE_PERFORMANCE</option>
+            <option>EXPOSITION</option>
+        </select>
+
+        <label for="eventTicketsCount">Tickets Count</label>
+        <input id="eventTicketsCount" v-model="eventTicketsCount" type="number" min="1" placeholder="Tickets count" />
 
         <h3>Person (optional)</h3>
         <label for="eyeColor">Eye color</label>
