@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, inject, ref } from 'vue';
+import { onMounted, inject, ref, computed } from 'vue';
 
 const tableData = inject('tableData');
 
@@ -20,6 +20,30 @@ onMounted(async () => {
 const editingId = ref(null);
 const editingField = ref(null);
 const draftValue = ref('');
+
+const filterId = ref('');
+const filterName = ref('');
+const filterDescription = ref('');
+const filterCreatedAt = ref('');
+
+const filteredTableData = computed(() => {
+    const idQ = filterId.value.trim().toLowerCase();
+    const nameQ = filterName.value.trim().toLowerCase();
+    const descQ = filterDescription.value.trim().toLowerCase();
+    const createdQ = filterCreatedAt.value.trim().toLowerCase();
+    return tableData.value.filter(d => {
+        const idStr = d.id == null ? '' : String(d.id).toLowerCase();
+        const nameStr = d.name == null ? '' : String(d.name).toLowerCase();
+        const descStr = d.description == null ? '' : String(d.description).toLowerCase();
+        const createdStr = d.createdAt == null ? '' : String(d.createdAt).toLowerCase();
+
+        if (idQ && !idStr.includes(idQ)) return false;
+        if (nameQ && !nameStr.includes(nameQ)) return false;
+        if (descQ && !descStr.includes(descQ)) return false;
+        if (createdQ && !createdStr.includes(createdQ)) return false;
+        return true;
+    });
+});
 
 function startEdit(id, field, currentValue) {
     editingId.value = id;
@@ -80,9 +104,24 @@ async function removeDummy(id) {
                     <th>Created at</th>
                     <th></th>
                 </tr>
+                <tr class="filters-row">
+                    <th>
+                        <input type="text" v-model="filterId" placeholder="Filter id" />
+                    </th>
+                    <th>
+                        <input type="text" v-model="filterName" placeholder="Filter name" />
+                    </th>
+                    <th>
+                        <input type="text" v-model="filterDescription" placeholder="Filter description" />
+                    </th>
+                    <th>
+                        <input type="text" v-model="filterCreatedAt" placeholder="Filter created" />
+                    </th>
+                    <th></th>
+                </tr>
             </thead>
             <tbody>
-                <tr v-for="dummy in tableData" :key="dummy.id">
+                <tr v-for="dummy in filteredTableData" :key="dummy.id">
                     <td>{{ dummy.id }}</td>
                     <td>
                         <span v-if="!(editingId === dummy.id && editingField === 'name')" @dblclick="startEdit(dummy.id, 'name', dummy.name)">{{ dummy.name }}</span>
@@ -122,5 +161,16 @@ button.danger {
     border: none;
     border-radius: 6px;
     cursor: pointer;
+}
+
+thead .filters-row th {
+    background: #fff;
+}
+
+thead input[type="text"] {
+    width: 100%;
+    padding: 6px 8px;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
 }
 </style>
