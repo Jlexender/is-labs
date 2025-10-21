@@ -3,21 +3,6 @@ on:
   push:
 
 jobs:
-  lint:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up JDK
-        uses: actions/setup-java@v4
-        with:
-          java-version: '21'
-          distribution: 'temurin'
-
-      - name: Run Linter
-        run: make lint
-
   ci:
     runs-on: ubuntu-latest
     steps:
@@ -39,7 +24,9 @@ jobs:
         run: |
           cd frontend
           bun install
-        
+
+      - name: Run linters
+        run: make lint
 
       - name: Add Server Host Key
         run: |
