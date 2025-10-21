@@ -15,45 +15,44 @@ import lombok.NoArgsConstructor;
 public class Ticket {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id; // > 0 auto
+    Long id;
 
     @NotBlank
-    String name; // not null, not empty
+    String name;
 
     @Embedded
     @NotNull
-    Coordinates coordinates; // not null
+    Coordinates coordinates;
 
     @Column(nullable = false)
-    LocalDate creationDate = LocalDate.now(); // auto
-
-    // Optional complex fields
-    @Embedded
-    Person person; // nullable
+    LocalDate creationDate = LocalDate.now();
 
     @Embedded
-    Event event; // nullable
+    Person person;
+
+    @Embedded
+    Event event;
 
     @Column(nullable = false)
     @Positive
-    float price; // > 0
+    float price;
 
     @Enumerated(EnumType.STRING)
-    TicketType type; // nullable
+    TicketType type;
 
     @Column(nullable = false)
     @NotNull
     @Positive
     @Max(100)
-    Long discount; // not null, >0, <=100
+    Long discount;
 
     @Column(nullable = false)
     @Positive
-    long number; // > 0
+    long number;
 
-    String comment; // nullable
+    String comment;
 
     @Embedded
-    Venue venue; // nullable
+    Venue venue;
 }
 

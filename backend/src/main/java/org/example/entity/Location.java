@@ -24,6 +24,6 @@ public class Location {
     @Column(name = "z_location", nullable = false)
     long z;
 
-    String locationName; // nullable
+    String locationName;
 }
 

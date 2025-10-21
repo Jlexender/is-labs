@@ -12,9 +12,9 @@ import jakarta.validation.constraints.*;
 @Embeddable
 public class Coordinates {
     @Max(397)
-    double x; // max 397
+    double x;
 
     @NotNull
     @Max(315)
-    Integer y; // not null, max 315
+    Integer y;
 }

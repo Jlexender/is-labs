@@ -17,16 +17,16 @@ import lombok.NoArgsConstructor;
 @Embeddable
 public class Person {
     @Enumerated(EnumType.STRING)
-    Color eyeColor; // nullable
+    Color eyeColor;
 
     @Enumerated(EnumType.STRING)
-    Color hairColor; // nullable
+    Color hairColor;
 
     @Embedded
     @NotNull
     Location location;
 
-    Date birthday; // nullable
+    Date birthday;
 
     @NotNull
     @Enumerated(EnumType.STRING)
