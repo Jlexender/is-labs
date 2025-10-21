@@ -181,7 +181,8 @@ async function sellTicket() {
                     <strong>ID {{ ticket.id }}:</strong> {{ ticket.name }} - {{ ticket.comment }}
                 </div>
             </div>
-            <div v-else-if="commentResults.length === 0 && !commentLoading && !commentError && commentPrefix" class="result">
+            <div v-else-if="commentResults.length === 0 && !commentLoading && !commentError && commentPrefix"
+                class="result">
                 No tickets found
             </div>
         </section>
