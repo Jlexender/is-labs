@@ -1,7 +1,6 @@
 <script setup>
-import { ref, inject } from 'vue';
+import { ref } from 'vue';
 
-const tableData = inject('tableData');
 const name = ref('');
 const price = ref('');
 const type = ref('');

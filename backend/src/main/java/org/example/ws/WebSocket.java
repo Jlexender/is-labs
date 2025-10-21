@@ -14,17 +14,17 @@ import jakarta.websocket.server.ServerEndpoint;
 
 @ServerEndpoint("/ws")
 public class WebSocket {
-    private static final Set<Session> sessions = ConcurrentHashMap.newKeySet();
-    private static final ObjectMapper objectMapper = new ObjectMapper().findAndRegisterModules();
+    private static final Set<Session> SESSIONS = ConcurrentHashMap.newKeySet();
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper().findAndRegisterModules();
 
     @OnOpen
     public void onOpen(Session session) {
-        sessions.add(session);
+        SESSIONS.add(session);
     }
 
     @OnClose
     public void onClose(Session session) {
-        sessions.remove(session);
+        SESSIONS.remove(session);
     }
 
 
@@ -35,7 +35,7 @@ public class WebSocket {
                         "type": "TICKET_CREATED",
                         "data": %s
                     }
-                    """.formatted(objectMapper.writeValueAsString(ticket));
+                    """.formatted(OBJECT_MAPPER.writeValueAsString(ticket));
             broadcast(message);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
@@ -59,7 +59,7 @@ public class WebSocket {
                         "type": "TICKET_UPDATED",
                         "data": %s
                     }
-                    """.formatted(objectMapper.writeValueAsString(ticket));
+                    """.formatted(OBJECT_MAPPER.writeValueAsString(ticket));
             broadcast(message);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
@@ -67,7 +67,7 @@ public class WebSocket {
     }
 
     public static void broadcast(String message) {
-        for (Session session : sessions) {
+        for (Session session : SESSIONS) {
             if (session.isOpen()) {
                 session.getAsyncRemote().sendText(message);
             }

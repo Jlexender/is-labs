@@ -1,4 +1,4 @@
-.PHONY: clean build push serve deploy
+.PHONY: clean build push publish forward lint
 
 BACKEND_BUILD_PATH:=backend/build/libs
 WILDFLY_PATH=/home/studs/s408724/wildfly
@@ -41,3 +41,9 @@ forward:
 		-p 2222 $(USERNAME)@$(HOST)
 
 
+lint:
+	@echo "Linting frontend..."
+	cd frontend && bun run lint
+	@echo "Linting backend..."
+	./gradlew checkstyleMain checkstyleTest
+	

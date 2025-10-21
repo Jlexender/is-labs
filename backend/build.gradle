@@ -9,6 +9,7 @@ plugins {
     // Apply the application plugin to add support for building a CLI application in Java.
     id 'application'
     id 'war'
+    id 'checkstyle'
 }
 
 repositories {
@@ -87,6 +88,10 @@ tasks.named('war') {
         def dodeployFile = new File(deployDir, warFile.name + '.dodeploy')
         dodeployFile.createNewFile()
     }
+}
+
+tasks.withType(Checkstyle) {
+    configFile = rootProject.file("config/checkstyle/checkstyle.xml")
 }
 
 
