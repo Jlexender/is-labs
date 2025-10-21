@@ -108,7 +108,7 @@ async function sellTicket() {
                 x: sellLocX.value ? parseInt(sellLocX.value) : null,
                 y: sellLocY.value ? parseInt(sellLocY.value) : 0,
                 z: sellLocZ.value ? parseInt(sellLocZ.value) : 0,
-                name: sellLocName.value || null
+                locationName: sellLocName.value || null
             }
         }
         const response = await fetch(`${API_BASE}/sell/${sellTicketId.value}?price=${sellPrice.value}`, {

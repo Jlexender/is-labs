@@ -2,7 +2,6 @@ package org.example.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,16 +11,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Embeddable
 public class Location {
-    @NotNull
-    @Column(name = "x_location", nullable = false)
+    @Column(name = "x_location")
     Integer x;
 
-    @NotNull
-    @Column(name = "y_location", nullable = false)
+    @Column(name = "y_location")
     long y;
 
-    @NotNull
-    @Column(name = "z_location", nullable = false)
+    @Column(name = "z_location")
     long z;
 
     String locationName;
