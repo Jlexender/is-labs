@@ -96,13 +96,4 @@ public class TicketResource {
                     .entity(e.getMessage()).build();
         }
     }
-
-    @DELETE
-    @Path("/cancel-event/{eventId}")
-    public Response cancelEvent(@PathParam("eventId") Long eventId) {
-        int deletedCount = ticketService.cancelEvent(eventId);
-        return Response.ok()
-                .entity("Deleted " + deletedCount + " tickets for event " + eventId)
-                .build();
-    }
 }
