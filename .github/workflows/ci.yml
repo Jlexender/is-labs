@@ -16,7 +16,7 @@ jobs:
           distribution: 'temurin'
 
       - name: Run Linter
-        run: ./make lint
+        run: make lint
 
   ci:
     runs-on: ubuntu-latest
