@@ -162,7 +162,6 @@ async function submit() {
             <option>GREEN</option>
             <option>RED</option>
             <option>BLUE</option>
-            <option>YELLOW</option>
         </select>
 
         <label for="nationality">Nationality</label>
