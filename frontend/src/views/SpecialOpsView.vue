@@ -344,8 +344,8 @@ button.danger:hover:not(:disabled) {
     padding: 15px;
     background: #0f172a; /* slate-900 */
     border-radius: 6px;
-    border-left: 4px solid #2563eb; /* blue-600 */
     border: 1px solid #1e3a8a; /* blue-900 */
+    border-left: 4px solid #2563eb; /* blue-600 */
 }
 
 .result.success {
