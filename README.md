@@ -2,24 +2,27 @@
 
 > Using Jakarta EE (fucking superior)
 
-## Songs collection
+## Host WildFly configuration
 
-[California Gurls - Nightcore](https://youtu.be/tyg6AHA8KE8)
+Port mappings:
 
-[BEST RUSSIAN HARDSTYLE PLAYLIST RUSSIAN HARDSTYLE REMIX PART 2](https://www.youtube.com/watch?v=xA0NLIX4CeY)
+1. HTTP: 8841
+2. HTTPS: 25613
+3. Mgmt HTTP: 18800
+4. Mgmt HTTPS: 18803
 
-[☆ Dazzlin' Darlin (i feel the rhythm more & more) SLOWED ☆](https://youtu.be/8A9bD1FkNl4)
+Username: `jex`
 
-[Ezekiel - help_urself 2 (feat. Siiickbrain)](https://youtu.be/ougoEKXu6pc)
+DBMS: PostgreSQL
+JNDI mapping: `java:/PostgresDS`
+Driver: `org.postgresql.postgresql 42.7.8`
 
-[Nightcore - Just Dance](https://youtu.be/uc2KgPZ2Neo)
+## Deployment
 
-[Fer Sure S3rl Remix (S3rl) (Remix)](https://youtu.be/wOwsqLaOh9I)
+Use makefile.
 
-[boy fantasy - i h3art you (slowed n reverb)](https://youtu.be/EUy4NGIJFM4)
+* `make build` for embedding a front-end & archiving a WAR
+* `make push` for deploying to WildFly on the server (change username in the makefile for your needs)
 
-[I Kissed A Girl (Sped up)](https://youtu.be/7ZyPvLPaxO0)
 
-[Nightcore This - S3RL feat Tamika](https://youtu.be/FcRJGHkpm8s)
 
-[Kets4ki - Party Addict [feat. Nosgov] (Extended Version)](https://youtu.be/2OXp7vReOmg)

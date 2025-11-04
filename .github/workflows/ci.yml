@@ -1,0 +1,45 @@
+
+on:
+  push:
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+      
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      
+      - name: Install frontend dependencies
+        run: |
+          cd frontend
+          bun install
+
+      - name: Run linters
+        run: make lint
+
+      - name: Add Server Host Key
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -p 2222 se.ifmo.ru >> ~/.ssh/known_hosts
+      
+      - name: Install SSH Private Key
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Build and push to server
+        run: make push
+        env: 
+          VITE_BACKEND_SOCKET: ${{ secrets.VITE_BACKEND_SOCKET }}
+

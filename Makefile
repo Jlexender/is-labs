@@ -1,0 +1,49 @@
+.PHONY: clean build push publish forward lint
+
+BACKEND_BUILD_PATH:=backend/build/libs
+WILDFLY_PATH=/home/studs/s408724/wildfly
+USERNAME=s408724
+HOST=se.ifmo.ru
+
+clean:
+	@echo "Cleaning..."
+	./gradlew clean
+	rm -rf backend/src/main/webapp/assets
+	rm -f backend/src/main/webapp/index.html
+	
+build: clean
+	@echo "Building..."
+	cd frontend && bun run build
+	cp -r frontend/dist/* backend/src/main/webapp/
+	./gradlew build
+	
+
+push: build
+	@echo "Pushing to server..."
+	scp -P 2222 $(BACKEND_BUILD_PATH)/*.war \
+				$(BACKEND_BUILD_PATH)/*.war.dodeploy \
+				$(USERNAME)@$(HOST):$(WILDFLY_PATH)/standalone/deployments/
+
+publish: clean
+	@echo "Pushing to git..."
+	git add .
+	git commit
+	git push
+
+
+HTTP_SRV_PORT=8841
+HTTP_MGMT_PORT=18800
+
+forward: 
+	@echo "Forwarding ports..."
+	ssh -L 8080:localhost:$(HTTP_SRV_PORT) \
+		-L 9990:localhost:$(HTTP_MGMT_PORT) \
+		-p 2222 $(USERNAME)@$(HOST)
+
+
+lint:
+	@echo "Linting frontend..."
+	cd frontend && bun run lint
+	@echo "Linting backend..."
+	./gradlew checkstyleMain checkstyleTest
+	
