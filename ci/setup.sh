@@ -6,6 +6,3 @@ sudo apt install -y build-essential curl git software-properties-common openjdk-
 cd frontend
 curl -fsSL https://bun.com/install | bash
 export PATH="$HOME/.bun/bin:$PATH"
-
-bun install
-cd ..
