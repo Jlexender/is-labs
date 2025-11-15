@@ -38,6 +38,8 @@ provide('tableData', tableData);
         <nav>
           <RouterLink to="/">Home</RouterLink>
           <RouterLink to="/special-ops">Special Ops</RouterLink>
+          <RouterLink to="/import">Import</RouterLink>
+          <RouterLink to="/import-history">Import History</RouterLink>
         </nav>
       </div>
     </header>

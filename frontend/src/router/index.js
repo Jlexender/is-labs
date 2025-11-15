@@ -13,6 +13,16 @@ const router = createRouter({
       path: '/special-ops',
       name: 'special-ops',
       component: () => import('../views/SpecialOpsView.vue'),
+    },
+    {
+      path: '/import',
+      name: 'import',
+      component: () => import('../views/ImportView.vue'),
+    },
+    {
+      path: '/import-history',
+      name: 'import-history',
+      component: () => import('../views/ImportHistoryView.vue'),
     }
   ],
 })
