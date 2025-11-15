@@ -4,6 +4,7 @@ import jakarta.ejb.Stateless;
 import jakarta.ejb.TransactionAttribute;
 import jakarta.ejb.TransactionAttributeType;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.LockModeType;
 import jakarta.persistence.PersistenceContext;
 
 import org.example.entity.Ticket;
@@ -16,14 +17,53 @@ public class TicketService {
     @PersistenceContext(unitName = "ticketPU")
     private EntityManager entityManager;
 
+    /**
+     * Save ticket with uniqueness check on ticket number
+     * Uses PESSIMISTIC_WRITE lock to prevent concurrent duplicates
+     */
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public Ticket save(Ticket ticket) {
+        // Check uniqueness of ticket number
+        checkTicketNumberUniqueness(ticket.getNumber(), null);
         entityManager.persist(ticket);
         return ticket;
+    }
+    
+    /**
+     * Check that ticket number is unique (programmatic constraint)
+     * @param number the ticket number to check
+     * @param excludeId ticket ID to exclude from check (for updates)
+     */
+    private void checkTicketNumberUniqueness(long number, Long excludeId) {
+        String query = excludeId == null 
+            ? "SELECT t FROM Ticket t WHERE t.number = :number"
+            : "SELECT t FROM Ticket t WHERE t.number = :number AND t.id != :excludeId";
+        
+        var q = entityManager.createQuery(query, Ticket.class)
+                .setParameter("number", number)
+                .setLockMode(LockModeType.PESSIMISTIC_WRITE);
+        
+        if (excludeId != null) {
+            q.setParameter("excludeId", excludeId);
+        }
+        
+        List<Ticket> existing = q.getResultList();
+        
+        if (!existing.isEmpty()) {
+            throw new IllegalArgumentException(
+                "Ticket with number " + number + " already exists");
+        }
     }
 
     public Ticket findById(Long id) {
         return entityManager.find(Ticket.class, id);
+    }
+
+    /**
+     * Find by ID with pessimistic write lock for updates
+     */
+    public Ticket findByIdForUpdate(Long id) {
+        return entityManager.find(Ticket.class, id, LockModeType.PESSIMISTIC_WRITE);
     }
 
     public List<Ticket> findAll() {
@@ -33,7 +73,8 @@ public class TicketService {
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void deleteById(Long id) {
-        Ticket ticket = findById(id);
+        // Use pessimistic lock to prevent concurrent modifications
+        Ticket ticket = findByIdForUpdate(id);
         if (ticket != null) {
             entityManager.remove(ticket);
         }
@@ -46,9 +87,16 @@ public class TicketService {
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public Ticket update(Long id, Ticket updated) {
-        Ticket existing = findById(id);
+        // Use pessimistic lock to prevent concurrent modifications
+        Ticket existing = findByIdForUpdate(id);
         if (existing == null)
             return null;
+        
+        // Check uniqueness if number is being changed
+        if (existing.getNumber() != updated.getNumber()) {
+            checkTicketNumberUniqueness(updated.getNumber(), id);
+        }
+        
         existing.setName(updated.getName());
         existing.setCoordinates(updated.getCoordinates());
         existing.setPerson(updated.getPerson());
@@ -89,7 +137,8 @@ public class TicketService {
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public Ticket sellTicket(Long ticketId, float price, org.example.entity.Person person) {
-        Ticket ticket = findById(ticketId);
+        // Use pessimistic lock to prevent concurrent modifications
+        Ticket ticket = findByIdForUpdate(ticketId);
         if (ticket == null) {
             throw new IllegalArgumentException("Ticket not found");
         }
