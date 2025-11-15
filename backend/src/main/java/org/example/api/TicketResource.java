@@ -6,9 +6,13 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.validation.Valid;
 
+import org.example.entity.ImportHistory;
 import org.example.entity.Ticket;
+import org.example.service.ImportService;
 import org.example.service.TicketService;
 import org.example.ws.WebSocket;
+
+import java.util.List;
 
 @Path("/ticket")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -16,6 +20,9 @@ import org.example.ws.WebSocket;
 public class TicketResource {
     @EJB
     private TicketService ticketService;
+    
+    @EJB
+    private ImportService importService;
 
     @POST
     @Path("/create")
@@ -96,4 +103,69 @@ public class TicketResource {
                     .entity(e.getMessage()).build();
         }
     }
+    
+    // Import operations
+    
+    @POST
+    @Path("/import")
+    public Response importTickets(
+            @QueryParam("userId") String userId,
+            List<Ticket> tickets) {
+        try {
+            // Validate userId
+            if (userId == null || userId.trim().isEmpty()) {
+                return Response.status(Response.Status.BAD_REQUEST)
+                        .entity("User ID is required").build();
+            }
+            
+            // Validate tickets list
+            if (tickets == null || tickets.isEmpty()) {
+                return Response.status(Response.Status.BAD_REQUEST)
+                        .entity("Ticket list cannot be empty").build();
+            }
+            
+            ImportHistory history = importService.importTickets(tickets, userId);
+            
+            // Check if import failed
+            if ("FAILED".equals(history.getStatus())) {
+                // Return the error message from history
+                return Response.status(Response.Status.BAD_REQUEST)
+                        .entity(history.getErrorMessage()).build();
+            }
+            
+            // Only notify WebSocket if import was successful
+            if ("SUCCESS".equals(history.getStatus())) {
+                // Reload tickets from DB to get their IDs for WebSocket notification
+                List<Ticket> allTickets = ticketService.findAll();
+                // Notify only for the last N tickets (where N = imported count)
+                int startIdx = Math.max(0, allTickets.size() - tickets.size());
+                for (int i = startIdx; i < allTickets.size(); i++) {
+                    WebSocket.ticketCreated(allTickets.get(i));
+                }
+            }
+            
+            return Response.ok(history).build();
+        } catch (jakarta.ejb.EJBException e) {
+            // Handle EJB exceptions (unwrap the cause)
+            Throwable cause = e.getCause();
+            String message = cause != null ? cause.getMessage() : e.getMessage();
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(message != null ? message : "Import failed").build();
+        } catch (Exception e) {
+            // Catch any other unexpected errors (prevents 500)
+            String message = e.getMessage();
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(message != null ? message : "Import failed").build();
+        }
+    }
+    
+    @GET
+    @Path("/import-history")
+    public Response getImportHistory(
+            @QueryParam("userId") String userId,
+            @QueryParam("isAdmin") @DefaultValue("false") boolean isAdmin) {
+        List<ImportHistory> history = importService.getImportHistory(userId, isAdmin);
+        return Response.ok(history).build();
+    }
 }
+

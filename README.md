@@ -23,6 +23,3 @@ Use makefile.
 
 * `make build` for embedding a front-end & archiving a WAR
 * `make push` for deploying to WildFly on the server (change username in the makefile for your needs)
-
-
-
