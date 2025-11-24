@@ -6,9 +6,13 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.validation.Valid;
 
+import org.example.entity.ImportHistory;
 import org.example.entity.Ticket;
+import org.example.service.ImportService;
 import org.example.service.TicketService;
 import org.example.ws.WebSocket;
+
+import java.util.List;
 
 @Path("/ticket")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -16,13 +20,21 @@ import org.example.ws.WebSocket;
 public class TicketResource {
     @EJB
     private TicketService ticketService;
+    
+    @EJB
+    private ImportService importService;
 
     @POST
     @Path("/create")
     public Response createTicket(@Valid Ticket ticket) {
-        Ticket created = ticketService.save(ticket);
-        WebSocket.ticketCreated(created);
-        return Response.ok(created).build();
+        try {
+            Ticket created = ticketService.save(ticket);
+            WebSocket.ticketCreated(created);
+            return Response.ok(created).build();
+        } catch (Exception e) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(e.getMessage()).build();
+        }
     }
 
     @GET
@@ -45,14 +57,17 @@ public class TicketResource {
     @PUT
     @Path("/{id}")
     public Response updateTicket(@PathParam("id") Long id, @Valid Ticket ticket) {
-        Ticket updated = ticketService.update(id, ticket);
-        if (updated == null)
-            return Response.status(Response.Status.NOT_FOUND).build();
-        WebSocket.ticketUpdated(updated);
-        return Response.ok(updated).build();
+        try {
+            Ticket updated = ticketService.update(id, ticket);
+            if (updated == null)
+                return Response.status(Response.Status.NOT_FOUND).build();
+            WebSocket.ticketUpdated(updated);
+            return Response.ok(updated).build();
+        } catch (Exception e) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(e.getMessage()).build();
+        }
     }
-
-    // Special operations
 
     @GET
     @Path("/min-number")
@@ -91,9 +106,63 @@ public class TicketResource {
             Ticket sold = ticketService.sellTicket(ticketId, price, person);
             WebSocket.ticketUpdated(sold);
             return Response.ok(sold).build();
-        } catch (IllegalArgumentException e) {
+        } catch (Exception e) {
             return Response.status(Response.Status.NOT_FOUND)
                     .entity(e.getMessage()).build();
         }
     }
+    
+    @POST
+    @Path("/import")
+    public Response importTickets(
+            @QueryParam("userId") String userId,
+            List<Ticket> tickets) {
+        try {
+            if (userId == null || userId.trim().isEmpty()) {
+                return Response.status(Response.Status.BAD_REQUEST)
+                        .entity("User ID is required").build();
+            }
+            
+            if (tickets == null || tickets.isEmpty()) {
+                return Response.status(Response.Status.BAD_REQUEST)
+                        .entity("Ticket list cannot be empty").build();
+            }
+            
+            ImportHistory history = importService.importTickets(tickets, userId);
+            
+            if ("FAILED".equals(history.getStatus())) {
+                return Response.status(Response.Status.BAD_REQUEST)
+                        .entity(history.getErrorMessage()).build();
+            }
+            
+            if ("SUCCESS".equals(history.getStatus())) {
+                List<Ticket> allTickets = ticketService.findAll();
+                int startIdx = Math.max(0, allTickets.size() - tickets.size());
+                for (int i = startIdx; i < allTickets.size(); i++) {
+                    WebSocket.ticketCreated(allTickets.get(i));
+                }
+            }
+            
+            return Response.ok(history).build();
+        } catch (jakarta.ejb.EJBException e) {
+            Throwable cause = e.getCause();
+            String message = cause != null ? cause.getMessage() : e.getMessage();
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(message != null ? message : "Import failed").build();
+        } catch (Exception e) {
+            String message = e.getMessage();
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(message != null ? message : "Import failed").build();
+        }
+    }
+    
+    @GET
+    @Path("/import-history")
+    public Response getImportHistory(
+            @QueryParam("userId") String userId,
+            @QueryParam("isAdmin") @DefaultValue("false") boolean isAdmin) {
+        List<ImportHistory> history = importService.getImportHistory(userId, isAdmin);
+        return Response.ok(history).build();
+    }
 }
+

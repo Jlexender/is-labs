@@ -4,6 +4,7 @@ import jakarta.ejb.Stateless;
 import jakarta.ejb.TransactionAttribute;
 import jakarta.ejb.TransactionAttributeType;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.LockModeType;
 import jakarta.persistence.PersistenceContext;
 
 import org.example.entity.Ticket;
@@ -18,12 +19,38 @@ public class TicketService {
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public Ticket save(Ticket ticket) {
+        checkTicketNumberUniqueness(ticket.getNumber(), null);
         entityManager.persist(ticket);
         return ticket;
+    }
+    
+    private void checkTicketNumberUniqueness(long number, Long excludeId) {
+        String query = excludeId == null 
+            ? "SELECT t FROM Ticket t WHERE t.number = :number"
+            : "SELECT t FROM Ticket t WHERE t.number = :number AND t.id != :excludeId";
+        
+        var q = entityManager.createQuery(query, Ticket.class)
+                .setParameter("number", number)
+                .setLockMode(LockModeType.PESSIMISTIC_WRITE);
+        
+        if (excludeId != null) {
+            q.setParameter("excludeId", excludeId);
+        }
+        
+        List<Ticket> existing = q.getResultList();
+        
+        if (!existing.isEmpty()) {
+            throw new IllegalArgumentException(
+                "Ticket with number " + number + " already exists");
+        }
     }
 
     public Ticket findById(Long id) {
         return entityManager.find(Ticket.class, id);
+    }
+
+    public Ticket findByIdForUpdate(Long id) {
+        return entityManager.find(Ticket.class, id, LockModeType.PESSIMISTIC_WRITE);
     }
 
     public List<Ticket> findAll() {
@@ -33,7 +60,7 @@ public class TicketService {
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void deleteById(Long id) {
-        Ticket ticket = findById(id);
+        Ticket ticket = findByIdForUpdate(id);
         if (ticket != null) {
             entityManager.remove(ticket);
         }
@@ -46,9 +73,14 @@ public class TicketService {
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public Ticket update(Long id, Ticket updated) {
-        Ticket existing = findById(id);
+        Ticket existing = findByIdForUpdate(id);
         if (existing == null)
             return null;
+        
+        if (existing.getNumber() != updated.getNumber()) {
+            checkTicketNumberUniqueness(updated.getNumber(), id);
+        }
+        
         existing.setName(updated.getName());
         existing.setCoordinates(updated.getCoordinates());
         existing.setPerson(updated.getPerson());
@@ -62,15 +94,14 @@ public class TicketService {
         return entityManager.merge(existing);
     }
 
-    // Special operations
-
+    @SuppressWarnings("null")
     public Ticket findMinByNumber() {
         return entityManager.createQuery(
                 "SELECT t FROM Ticket t ORDER BY t.number ASC", Ticket.class)
                 .setMaxResults(1)
                 .getResultStream()
                 .findFirst()
-                .orElse(null);
+                .orElse(null); // Can return null if no tickets exist
     }
 
     public long countByNumberLessThan(long number) {
@@ -89,7 +120,7 @@ public class TicketService {
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public Ticket sellTicket(Long ticketId, float price, org.example.entity.Person person) {
-        Ticket ticket = findById(ticketId);
+        Ticket ticket = findByIdForUpdate(ticketId);
         if (ticket == null) {
             throw new IllegalArgumentException("Ticket not found");
         }

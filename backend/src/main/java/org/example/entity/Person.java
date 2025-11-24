@@ -2,6 +2,8 @@ package org.example.entity;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Enumerated;
@@ -14,6 +16,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Person {
     @Enumerated(EnumType.STRING)
     Color eyeColor;

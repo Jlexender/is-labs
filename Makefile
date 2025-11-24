@@ -47,3 +47,22 @@ lint:
 	@echo "Linting backend..."
 	./gradlew checkstyleMain checkstyleTest
 	
+
+setup-jmeter:
+	@echo "Setting up JMeter..."
+	wget https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-5.6.3.tgz
+	tar -xzf apache-jmeter-5.6.3.tgz
+	rm apache-jmeter-5.6.3.tgz
+	mkdir -p bin
+	mv apache-jmeter-5.6.3 bin/jmeter
+
+
+load-clean:
+	@echo "Cleaning load test results..."
+	rm -rf ci/jmeter/report
+	rm -f ci/jmeter/results.jtl
+
+
+load-test: load-clean
+	@echo "Running load test..."
+	bin/jmeter/bin/jmeter -n -t ci/jmeter/ticket-system-test-plan.jmx -l ci/jmeter/results.jtl -e -o ci/jmeter/report
