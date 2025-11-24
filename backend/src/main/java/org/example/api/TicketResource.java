@@ -27,9 +27,14 @@ public class TicketResource {
     @POST
     @Path("/create")
     public Response createTicket(@Valid Ticket ticket) {
-        Ticket created = ticketService.save(ticket);
-        WebSocket.ticketCreated(created);
-        return Response.ok(created).build();
+        try {
+            Ticket created = ticketService.save(ticket);
+            WebSocket.ticketCreated(created);
+            return Response.ok(created).build();
+        } catch (IllegalArgumentException e) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(e.getMessage()).build();
+        }
     }
 
     @GET
@@ -52,11 +57,16 @@ public class TicketResource {
     @PUT
     @Path("/{id}")
     public Response updateTicket(@PathParam("id") Long id, @Valid Ticket ticket) {
-        Ticket updated = ticketService.update(id, ticket);
-        if (updated == null)
-            return Response.status(Response.Status.NOT_FOUND).build();
-        WebSocket.ticketUpdated(updated);
-        return Response.ok(updated).build();
+        try {
+            Ticket updated = ticketService.update(id, ticket);
+            if (updated == null)
+                return Response.status(Response.Status.NOT_FOUND).build();
+            WebSocket.ticketUpdated(updated);
+            return Response.ok(updated).build();
+        } catch (IllegalArgumentException e) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(e.getMessage()).build();
+        }
     }
 
     @GET

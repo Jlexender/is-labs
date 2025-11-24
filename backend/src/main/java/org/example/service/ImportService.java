@@ -1,5 +1,7 @@
 package org.example.service;
 
+import jakarta.annotation.Resource;
+import jakarta.ejb.SessionContext;
 import jakarta.ejb.Stateless;
 import jakarta.ejb.TransactionAttribute;
 import jakarta.ejb.TransactionAttributeType;
@@ -24,6 +26,9 @@ public class ImportService {
 
     private Validator validator;
 
+    @Resource
+    private SessionContext sessionContext;
+
     @jakarta.annotation.Resource
     public void setValidator(Validator validator) {
         this.validator = validator;
@@ -42,7 +47,7 @@ public class ImportService {
             }
 
             for (Ticket ticket : tickets) {
-                ticket.setId(null); // Ensure new entities
+                ticket.setId(null);
                 entityManager.persist(ticket);
             }
 
@@ -50,17 +55,21 @@ public class ImportService {
 
             history.setStatus("SUCCESS");
             history.setObjectCount(tickets.size());
+            persistHistory(history);
+            return history;
         } catch (Exception e) {
             history.setStatus("FAILED");
             String errorMsg = getRootCauseMessage(e);
             history.setErrorMessage(errorMsg);
-            // Transaction will be rolled back automatically due to RuntimeException
-            // but we catch it here to prevent EJBException wrapping
-        } finally {
             persistHistory(history);
+            if (sessionContext != null) {
+                sessionContext.setRollbackOnly();
+            }
+            if (e instanceof RuntimeException runtime) {
+                throw runtime;
+            }
+            throw new IllegalStateException(errorMsg, e);
         }
-
-        return history;
     }
 
     private void validateTicket(Ticket ticket) {
@@ -76,7 +85,6 @@ public class ImportService {
             }
         }
 
-        // Manual validation for required fields
         if (ticket.getName() == null || ticket.getName().trim().isEmpty()) {
             throw new IllegalArgumentException("Ticket name is required");
         }
@@ -116,7 +124,6 @@ public class ImportService {
         Throwable current = e;
         String message = e.getMessage();
         
-        // Traverse to find the root cause
         while (current.getCause() != null && current.getCause() != current) {
             current = current.getCause();
             if (current.getMessage() != null && !current.getMessage().isEmpty()) {
