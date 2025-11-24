@@ -11,7 +11,12 @@ bin
 
 # env
 .env
-.log
+
+# logs
+*.log
+
+# tarballs
+*.tgz
 
 # Docker
 db_data
