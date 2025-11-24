@@ -31,7 +31,7 @@ public class TicketResource {
             Ticket created = ticketService.save(ticket);
             WebSocket.ticketCreated(created);
             return Response.ok(created).build();
-        } catch (IllegalArgumentException e) {
+        } catch (Exception e) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity(e.getMessage()).build();
         }
@@ -63,7 +63,7 @@ public class TicketResource {
                 return Response.status(Response.Status.NOT_FOUND).build();
             WebSocket.ticketUpdated(updated);
             return Response.ok(updated).build();
-        } catch (IllegalArgumentException e) {
+        } catch (Exception e) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity(e.getMessage()).build();
         }
@@ -106,7 +106,7 @@ public class TicketResource {
             Ticket sold = ticketService.sellTicket(ticketId, price, person);
             WebSocket.ticketUpdated(sold);
             return Response.ok(sold).build();
-        } catch (IllegalArgumentException e) {
+        } catch (Exception e) {
             return Response.status(Response.Status.NOT_FOUND)
                     .entity(e.getMessage()).build();
         }
