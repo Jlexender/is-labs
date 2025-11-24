@@ -59,8 +59,6 @@ public class TicketResource {
         return Response.ok(updated).build();
     }
 
-    // Special operations
-
     @GET
     @Path("/min-number")
     public Response getTicketWithMinNumber() {
@@ -104,21 +102,17 @@ public class TicketResource {
         }
     }
     
-    // Import operations
-    
     @POST
     @Path("/import")
     public Response importTickets(
             @QueryParam("userId") String userId,
             List<Ticket> tickets) {
         try {
-            // Validate userId
             if (userId == null || userId.trim().isEmpty()) {
                 return Response.status(Response.Status.BAD_REQUEST)
                         .entity("User ID is required").build();
             }
             
-            // Validate tickets list
             if (tickets == null || tickets.isEmpty()) {
                 return Response.status(Response.Status.BAD_REQUEST)
                         .entity("Ticket list cannot be empty").build();
@@ -126,18 +120,13 @@ public class TicketResource {
             
             ImportHistory history = importService.importTickets(tickets, userId);
             
-            // Check if import failed
             if ("FAILED".equals(history.getStatus())) {
-                // Return the error message from history
                 return Response.status(Response.Status.BAD_REQUEST)
                         .entity(history.getErrorMessage()).build();
             }
             
-            // Only notify WebSocket if import was successful
             if ("SUCCESS".equals(history.getStatus())) {
-                // Reload tickets from DB to get their IDs for WebSocket notification
                 List<Ticket> allTickets = ticketService.findAll();
-                // Notify only for the last N tickets (where N = imported count)
                 int startIdx = Math.max(0, allTickets.size() - tickets.size());
                 for (int i = startIdx; i < allTickets.size(); i++) {
                     WebSocket.ticketCreated(allTickets.get(i));
@@ -146,13 +135,11 @@ public class TicketResource {
             
             return Response.ok(history).build();
         } catch (jakarta.ejb.EJBException e) {
-            // Handle EJB exceptions (unwrap the cause)
             Throwable cause = e.getCause();
             String message = cause != null ? cause.getMessage() : e.getMessage();
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity(message != null ? message : "Import failed").build();
         } catch (Exception e) {
-            // Catch any other unexpected errors (prevents 500)
             String message = e.getMessage();
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity(message != null ? message : "Import failed").build();

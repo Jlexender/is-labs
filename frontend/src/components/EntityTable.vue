@@ -10,8 +10,6 @@ onMounted(async () => {
             throw new Error('Network response was not ok');
         }
         tableData.value = await response.json();
-
-        console.log('Fetched data:', tableData.value);
     } catch (error) {
         console.error('There was a problem with the fetch operation:', error);
     }

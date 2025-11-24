@@ -29,10 +29,6 @@ public class ImportService {
         this.validator = validator;
     }
 
-    /**
-     * Import tickets with SERIALIZABLE isolation level to prevent concurrent conflicts
-     * Rolls back everything if any error occurs
-     */
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public ImportHistory importTickets(List<Ticket> tickets, String userId) {
         ImportHistory history = new ImportHistory();
@@ -40,32 +36,27 @@ public class ImportService {
         history.setCreatedAt(LocalDateTime.now());
 
         try {
-            // Validate all tickets first
             for (Ticket ticket : tickets) {
                 validateTicket(ticket);
                 checkUniqueness(ticket);
             }
 
-            // Persist all tickets
             for (Ticket ticket : tickets) {
                 ticket.setId(null); // Ensure new entities
                 entityManager.persist(ticket);
             }
 
-            // Flush to trigger any DB constraints
             entityManager.flush();
 
             history.setStatus("SUCCESS");
             history.setObjectCount(tickets.size());
         } catch (Exception e) {
             history.setStatus("FAILED");
-            // Get the root cause message for better error reporting
             String errorMsg = getRootCauseMessage(e);
             history.setErrorMessage(errorMsg);
             // Transaction will be rolled back automatically due to RuntimeException
             // but we catch it here to prevent EJBException wrapping
         } finally {
-            // Persist history in a separate transaction
             persistHistory(history);
         }
 
@@ -103,10 +94,6 @@ public class ImportService {
         }
     }
 
-    /**
-     * Check programmatic uniqueness constraint: ticket number must be unique
-     * Uses pessimistic locking to prevent concurrent violations
-     */
     private void checkUniqueness(Ticket ticket) {
         List<Ticket> existing = entityManager.createQuery(
                 "SELECT t FROM Ticket t WHERE t.number = :number", Ticket.class)
@@ -125,9 +112,6 @@ public class ImportService {
         entityManager.persist(history);
     }
 
-    /**
-     * Extract the most meaningful error message from the exception chain
-     */
     private String getRootCauseMessage(Exception e) {
         Throwable current = e;
         String message = e.getMessage();

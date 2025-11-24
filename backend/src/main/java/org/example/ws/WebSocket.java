@@ -2,8 +2,6 @@ package org.example.ws;
 
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -38,7 +36,8 @@ public class WebSocket {
                     """.formatted(OBJECT_MAPPER.writeValueAsString(ticket));
             broadcast(message);
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
+            // Silently ignore serialization errors to prevent disrupting the application
+            // The WebSocket notification is non-critical
         }
     }
 
@@ -62,7 +61,8 @@ public class WebSocket {
                     """.formatted(OBJECT_MAPPER.writeValueAsString(ticket));
             broadcast(message);
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
+            // Silently ignore serialization errors to prevent disrupting the application
+            // The WebSocket notification is non-critical
         }
     }
 
